@@ -5,9 +5,13 @@ import { SearchBar } from '../components/SearchBar';
 import { CategoryCard } from '../components/CategoryCard';
 import { Compass, User, Rocket, Landmark, Milestone, Sparkles, Star } from 'lucide-react';
 import type { EntityCategory } from '../types';
+import { useNasaApod } from '../hooks/useNasaApod';
+import { GlassCard } from '../components/GlassCard';
+import { LoadingSkeleton } from '../components/LoadingSkeleton';
 
 export const Home: React.FC = () => {
   const navigate = useNavigate();
+  const { data: apod, isLoading: isApodLoading } = useNasaApod();
 
   // Category listing configs
   const categories = [
@@ -214,6 +218,115 @@ export const Home: React.FC = () => {
             </button>
           ))}
         </div>
+      </motion.div>
+
+      {/* NASA APOD Section */}
+      <motion.div variants={itemVariants} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '8px' }}>NASA Astronomy Picture of the Day</h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+            Featuring a different space photograph or flight capture daily.
+          </p>
+        </div>
+
+        {isApodLoading ? (
+          <div style={{
+            height: '280px',
+            background: 'rgba(255, 255, 255, 0.02)',
+            borderRadius: '20px',
+            border: '1px solid var(--border-color)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            <LoadingSkeleton variant="card" />
+          </div>
+        ) : apod && (
+          <GlassCard style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1.2fr',
+            gap: '24px',
+            padding: '24px',
+            overflow: 'hidden'
+          }} className="grid-responsive">
+            <div style={{
+              borderRadius: '16px',
+              overflow: 'hidden',
+              height: '320px',
+              border: '1px solid rgba(255, 255, 255, 0.05)',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
+              position: 'relative'
+            }}>
+              {apod.mediaType === 'video' ? (
+                <iframe
+                  src={apod.url}
+                  title={apod.title}
+                  frameBorder="0"
+                  allow="autoplay; encrypted-media"
+                  allowFullScreen
+                  style={{ width: '100%', height: '100%' }}
+                />
+              ) : (
+                <img
+                  src={apod.url}
+                  alt={apod.title}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              )}
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '14px' }}>
+              <div>
+                <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--color-accent)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  {apod.date}
+                </span>
+                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)', margin: '4px 0' }}>
+                  {apod.title}
+                </h3>
+              </div>
+              <p style={{
+                color: 'var(--text-secondary)',
+                fontSize: '0.9rem',
+                lineHeight: '1.6',
+                margin: 0,
+                maxHeight: '160px',
+                overflowY: 'auto',
+                paddingRight: '6px'
+              }}>
+                {apod.explanation}
+              </p>
+              {apod.hdurl && (
+                <a
+                  href={apod.hdurl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    alignSelf: 'flex-start',
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    color: 'var(--text-primary)',
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    fontSize: '0.85rem',
+                    fontWeight: 600,
+                    textDecoration: 'none',
+                    transition: 'all var(--transition-fast)',
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--color-accent)';
+                    e.currentTarget.style.backgroundColor = 'rgba(var(--color-accent-rgb), 0.05)';
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                    e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
+                  }}
+                >
+                  View High-Res Version
+                </a>
+              )}
+            </div>
+          </GlassCard>
+        )}
       </motion.div>
 
       {/* Categories Grid Section */}

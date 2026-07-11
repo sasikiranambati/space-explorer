@@ -28,7 +28,9 @@ export const planets: Planet[] = [
       '1957: Sputnik 1 launches, beginning the era of Earth observation from space.',
       '1968: Apollo 8 astronauts capture the famous "Earthrise" photo from lunar orbit.',
       '1972: Apollo 17 crew captures the iconic "Blue Marble" photograph.'
-    ]
+    ],
+    escapeVelocity: '11.19 km/s',
+    density: '5.51 g/cm³'
   },
   {
     id: 'mars',
@@ -58,7 +60,9 @@ export const planets: Planet[] = [
       '1997: Pathfinder and Sojourner land, introducing the first successful robotic rover.',
       '2012: Curiosity Rover lands in Gale Crater, confirming liquid water once pooled on Mars.',
       '2021: Perseverance Rover and Ingenuity Helicopter land to search for ancient biosignatures.'
-    ]
+    ],
+    escapeVelocity: '5.03 km/s',
+    density: '3.93 g/cm³'
   },
   {
     id: 'jupiter',
@@ -87,7 +91,9 @@ export const planets: Planet[] = [
       '1979: Voyager 1 and Voyager 2 discover Jupiter\'s ring system and active volcanoes on Io.',
       '1995: Galileo spacecraft becomes the first to orbit Jupiter, dropping a probe into its atmosphere.',
       '2016: Juno spacecraft enters polar orbit to examine its internal structure and magnetic field.'
-    ]
+    ],
+    escapeVelocity: '59.50 km/s',
+    density: '1.33 g/cm³'
   },
   {
     id: 'saturn',
@@ -115,7 +121,9 @@ export const planets: Planet[] = [
       '1979: Pioneer 11 flies within 21,000 km of Saturn\'s cloud tops, detecting its magnetic field.',
       '1980: Voyager 1 takes high-res photographs revealing details of its rings and its moon Titan.',
       '2004: Cassini-Huygens becomes the first spacecraft to orbit Saturn, landing a probe on Titan in 2005.'
-    ]
+    ],
+    escapeVelocity: '35.50 km/s',
+    density: '0.69 g/cm³'
   }
 ];
 
@@ -226,6 +234,14 @@ export const astronauts: Astronaut[] = [
       'First human to walk on the Moon (July 21, 1969).',
       'Performed the first successful docking of two spacecraft in orbit (Gemini 8).',
       'Awarded the Presidential Medal of Freedom and Congressional Space Medal of Honor.'
+    ],
+    awards: ['Congressional Space Medal of Honor', 'Presidential Medal of Freedom', 'NASA Distinguished Service Medal'],
+    careerTimeline: [
+      { year: '1947', title: 'US Navy Aviator', description: 'Selected for Navy flight training, flew active combat missions in the Korean War.' },
+      { year: '1955', title: 'NACA Test Pilot', description: 'Joined the National Advisory Committee for Aeronautics, flying the supersonic X-15 rocket jet.' },
+      { year: '1962', title: 'Selected by NASA', description: 'Chosen in the second class of NASA Astronauts ("The Next Nine").' },
+      { year: '1966', title: 'Gemini 8 Commander', description: 'Commanded Gemini 8, performing the first successful docking of two spacecraft in orbit.' },
+      { year: '1969', title: 'Apollo 11 & First Lunar Steps', description: 'Commanded Apollo 11 and became the first human to walk on the lunar surface.' }
     ]
   },
   {
@@ -248,6 +264,13 @@ export const astronauts: Astronaut[] = [
       'Second human to walk on the Moon.',
       'Developed underwater training techniques to prepare astronauts for EVA.',
       'Completed a historic 5.5-hour spacewalk during Gemini 12, proving humans can work comfortably in open space.'
+    ],
+    awards: ['Congressional Gold Medal', 'Presidential Medal of Freedom', 'NASA Distinguished Service Medal'],
+    careerTimeline: [
+      { year: '1951', title: 'US Air Force Fighter Pilot', description: 'Flew 66 combat missions in the Korean War, shooting down two MiG-15s.' },
+      { year: '1963', title: 'Doctorate at MIT & NASA', description: 'Earned a Sc.D. in Astronautics from MIT and was selected as a NASA Astronaut.' },
+      { year: '1966', title: 'Gemini 12 Flight', description: 'Completed a historic 5.5-hour EVA spacewalk, establishing manual space work standards.' },
+      { year: '1969', title: 'Apollo 11 Moonwalk', description: 'Stepped onto the Moon as Lunar Module Pilot, the second person to do so.' }
     ]
   },
   {
@@ -271,6 +294,13 @@ export const astronauts: Astronaut[] = [
       'First American woman in space (STS-7, June 18, 1983).',
       'Helped develop the Space Shuttle\'s robotic arm (Canadarm).',
       'Served on the presidential commissions investigating the Challenger and Columbia disasters.'
+    ],
+    awards: ['NASA Space Flight Medal', 'NASA Distinguished Service Medal', 'National Women\'s Hall of Fame'],
+    careerTimeline: [
+      { year: '1978', title: 'NASA Selection', description: 'Selected in NASA\'s first astronaut group to recruit women ("The Thirty-Five New Guys").' },
+      { year: '1981', title: 'Space Shuttle Robotic Arm', description: 'Helped develop the Canadarm shuttle manipulator system as Capcom.' },
+      { year: '1983', title: 'STS-7 Launch', description: 'Flew aboard Space Shuttle Challenger, becoming the first American woman in space.' },
+      { year: '1984', title: 'STS-41-G Flight', description: 'Completed her second space flight, logging over 343 cumulative hours in orbit.' }
     ]
   },
   {
@@ -289,11 +319,18 @@ export const astronauts: Astronaut[] = [
     missions: ['Vostok 1'],
     agency: 'esa', // Stored under generic Russian space agency placeholder or associated
     nationality: 'Soviet / Russian',
-    biography: 'Gagarin was born in the village of Klushino. He became a military pilot before being chosen as one of the top 20 candidates for the Soviet space program. On April 12, 1961, he launched aboard Vostok 1, orbiting Earth once. He became an international celebrity, touring the world to promote the Soviet achievement.',
+    biography: 'Born in the village of Klushino, Gagarin became a military pilot before being chosen as one of the top 20 candidates for the Soviet space program. On April 12, 1961, he launched aboard Vostok 1, orbiting Earth once. He became an international celebrity, touring the world to promote the Soviet achievement.',
     achievements: [
-      'First human in space and first to orbit the Earth (April 12, 1961).',
-      'Awarded Hero of the Soviet Union, the nation\'s highest honor.',
-      'Served as Deputy Training Director of the Cosmonaut Training Centre.'
+      'First human in space (Vostok 1, April 12, 1961).',
+      'Completed a single orbit of the Earth in 108 minutes.',
+      'Awarded Hero of the Soviet Union (the nation\'s highest honor).'
+    ],
+    awards: ['Hero of the Soviet Union', 'Order of Lenin', 'Gold Space Medal (FAI)'],
+    careerTimeline: [
+      { year: '1955', title: 'Soviet Air Force Cadet', description: 'Entered the military flight academy, qualifying as a MiG-15 fighter pilot.' },
+      { year: '1960', title: 'Selected as Cosmonaut', description: 'Chosen in the first group of Soviet cosmonauts ("The Sochi Six").' },
+      { year: '1961', title: 'Vostok 1 Flight', description: 'Achieved first orbital human flight around the Earth in 108 minutes.' },
+      { year: '1963', title: 'Cosmonaut Training Director', description: 'Appointed Deputy Training Director of the Star City cosmonaut center.' }
     ]
   },
   {
@@ -521,7 +558,7 @@ export const missions: Mission[] = [
     name: 'Apollo 11',
     category: 'mission',
     description: 'Apollo 11 was the American spaceflight that first landed humans on the Moon. Commander Neil Armstrong and Lunar Module Pilot Buzz Aldrin landed the Apollo Lunar Module Eagle on July 20, 1969.',
-    image: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80',
     featured: true,
     status: 'Success',
     launchDate: 'July 16, 1969',
@@ -529,7 +566,7 @@ export const missions: Mission[] = [
     launchVehicle: 'Saturn V',
     duration: '8 days, 3 hours, 18 minutes',
     objective: 'Perform a crewed lunar landing and return safely to Earth, fulfilling President John F. Kennedy\'s goal set in 1961.',
-    crew: ['Neil Armstrong', 'Buzz Aldrin', 'Michael Collins'],
+    crew: ['Neil Armstrong (Commander)', 'Buzz Aldrin (Lunar Module Pilot)', 'Michael Collins (Command Module Pilot)'],
     agency: 'nasa',
     milestones: [
       { date: 'July 16, 1969', title: 'Launch', description: 'Liftoff from Launch Pad 39A at Kennedy Space Center.' },
@@ -542,7 +579,61 @@ export const missions: Mission[] = [
       'Collected 21.5 kg of lunar material, including basalt rocks and breccia.',
       'Deployed the Early Apollo Scientific Experiments Package (EASEP).',
       'Installed a laser ranging retroreflector (still in use today to measure Earth-Moon distance).'
-    ]
+    ],
+    patchUrl: 'https://upload.wikimedia.org/wikipedia/commons/2/27/Apollo_11_Restore.svg',
+    videoUrl: 'https://www.youtube.com/embed/RMIN3xD4550',
+    objectives: [
+      'Perform crewed landing on the Moon surface.',
+      'Gather lunar geological samples.',
+      'Establish visual contact/retransmission to Earth.',
+      'Deploy scientific equipment (EASEP).'
+    ],
+    stats: {
+      'Lunar Surface Stay': '21 hours, 36 minutes',
+      'Total Samples': '21.5 kg',
+      'Max Speed': '39,897 km/h',
+      'Orbits Completed': '30 orbits'
+    }
+  },
+  {
+    id: 'apollo-13',
+    name: 'Apollo 13',
+    category: 'mission',
+    description: 'Apollo 13 was the seventh crewed mission in the Apollo space program, and the third intended to land on the Moon. The landing was aborted after an oxygen tank exploded in the Service Module.',
+    image: 'https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?auto=format&fit=crop&w=1200&q=80',
+    featured: false,
+    status: 'Failure',
+    launchDate: 'April 11, 1970',
+    landingDate: 'April 17, 1970',
+    launchVehicle: 'Saturn V',
+    duration: '5 days, 22 hours, 54 minutes',
+    objective: 'Perform a crewed landing in the Fra Mauro highlands, conduct geology surveys, and deploy lunar surface experiments.',
+    crew: ['Jim Lovell (Commander)', 'Fred Haise (Lunar Module Pilot)', 'Jack Swigert (Command Module Pilot)'],
+    agency: 'nasa',
+    milestones: [
+      { date: 'April 11, 1970', title: 'Launch', description: 'Liftoff from Kennedy Space Center Pad 39A.' },
+      { date: 'April 13, 1970', title: 'Oxygen Tank Explosion', description: 'An explosion in Service Module oxygen tank 2 forces the mission abort.' },
+      { date: 'April 14, 1970', title: 'Lunar Flyby', description: 'Using the Lunar Module lifeboat, the crew loops around the Moon for a free-return trajectory.' },
+      { date: 'April 17, 1970', title: 'Safe Splashdown', description: 'The crew returns safely to Earth, splashing down in the South Pacific Ocean.' }
+    ],
+    scienceResults: [
+      'Provided critical operational insights on emergency spacecraft resource pooling.',
+      'Tested ground-control contingency algorithms under life-threatening conditions.'
+    ],
+    patchUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a2/Apollo_13_Restore.svg',
+    videoUrl: 'https://www.youtube.com/embed/nEl0NsYnJH4',
+    objectives: [
+      'Perform crewed landing in the Fra Mauro Highlands.',
+      'Deploy the ALSEP experiment packages.',
+      'Safely abort and return the crew after oxygen systems rupture.',
+      'Maintain thermal limits in frozen lunar module.'
+    ],
+    stats: {
+      'Distance from Earth': '400,171 km',
+      'Flight Duration': '142.9 Hours',
+      'Cabin Temp (Emergency)': '3°C',
+      'Lunar Orbit Speed': 'Free Return Loop'
+    }
   },
   {
     id: 'iss',
@@ -557,7 +648,7 @@ export const missions: Mission[] = [
     duration: '27+ Years (Continuous habitation since Nov 2000)',
     objective: 'Provide a long-term research platform in microgravity, conducting studies in astrobiology, physics, materials, and human physiology.',
     crew: ['Rotational crews of 7 astronauts (typically from partner countries)'],
-    agency: 'nasa', // Stored under NASA/Multi-agency
+    agency: 'nasa',
     milestones: [
       { date: 'Nov 20, 1998', title: 'First Module Launched', description: 'The Russian Zarya module is launched, starting orbital assembly.' },
       { date: 'Nov 2, 2000', title: 'Expedition 1 Arrives', description: 'Bill Shepherd, Yuri Gidzenko, and Sergei Krikalev become the first permanent crew.' },
@@ -568,7 +659,21 @@ export const missions: Mission[] = [
       'Conducted over 3,000 scientific investigations from 100+ countries.',
       'Studied muscle and bone loss in space, contributing to osteoporosis treatments on Earth.',
       'Tested critical life-support loop technologies for long-duration Mars transits.'
-    ]
+    ],
+    patchUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e1/International_Space_Station_patch.svg',
+    videoUrl: 'https://www.youtube.com/embed/SGP6Y0Pnpe4',
+    objectives: [
+      'Maintain continuous human presence in low Earth orbit.',
+      'Perform microgravity scientific experiments.',
+      'Develop space technologies for future solar exploration.',
+      'Provide international cooperation in spaceflight.'
+    ],
+    stats: {
+      'Speed': '27,600 km/h',
+      'Altitude': '408 km',
+      'Orbital Period': '92 minutes',
+      'Total Habitable Volume': '388 cubic meters'
+    }
   },
   {
     id: 'james-webb',
@@ -583,7 +688,7 @@ export const missions: Mission[] = [
     duration: '4+ Years (Designed for 10-20 years)',
     objective: 'Observe the universe\'s first galaxies, analyze exoplanet atmospheres for habitability, and examine star formation in dense dust clouds.',
     crew: ['Uncrewed (Orbiting Earth-Sun Lagrange Point L2)'],
-    agency: 'nasa', // NASA, ESA, CSA joint project
+    agency: 'nasa',
     milestones: [
       { date: 'Dec 25, 2021', title: 'Launch', description: 'Launched from Guiana Space Centre aboard Ariane flight VA256.' },
       { date: 'Jan 2022', title: 'Deployment', description: 'Successfully unfurls its 5-layer sunshield and 6.5m hexagonal gold mirror.' },
@@ -594,7 +699,21 @@ export const missions: Mission[] = [
       'Detected carbon dioxide, water vapor, and methane in exoplanet atmospheres (e.g. WASP-96b).',
       'Photographed galaxies forming just 320 million years after the Big Bang (JADES-GS-z14-0).',
       'Captured details of stellar nurseries inside the Carina Nebula.'
-    ]
+    ],
+    patchUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/ee/JWST_Patch.svg',
+    videoUrl: 'https://www.youtube.com/embed/1C_xu17nPh0',
+    objectives: [
+      'Search for the first galaxies formed after the Big Bang.',
+      'Determine how galaxies evolved from their formation to now.',
+      'Observe the stages of the physical origin of planetary systems.',
+      'Measure chemical properties of distant planetary atmospheres.'
+    ],
+    stats: {
+      'Primary Mirror Size': '6.5 meters',
+      'Distance from Earth': '1.5 Million km',
+      'Sunshield Dimensions': '21.2m x 14.2m',
+      'Operational Temp': '-233°C (37 Kelvin)'
+    }
   },
   {
     id: 'voyager-1',
@@ -620,7 +739,102 @@ export const missions: Mission[] = [
       'Discovered Jupiter\'s ring system and multiple outer-planet moons.',
       'Identified cosmic-ray fluctuations in interstellar space.',
       'Confirmed the size of Saturn\'s ring subdivisions.'
-    ]
+    ],
+    patchUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/df/Voyager_1_patch.png',
+    videoUrl: 'https://www.youtube.com/embed/n42n6lT6QxI',
+    objectives: [
+      'Analyze outer planetary environments.',
+      'Investigate magnetic fields and plasma waves.',
+      'Enter interstellar space and exit solar boundary.',
+      'Carry the Golden Record messages to extraterrestrials.'
+    ],
+    stats: {
+      'Distance from Sun': '24.4 Billion km',
+      'Speed Relative to Sun': '61,146 km/h',
+      'Telemetry Send Time': '22.5 Hours',
+      'Active Instruments': '4 scientific packages'
+    }
+  },
+  {
+    id: 'perseverance',
+    name: 'Perseverance Rover',
+    category: 'mission',
+    description: 'Perseverance is a car-sized robotic rover designed to explore the Jezero crater on Mars. It seeks signs of ancient microbial habitability, caching physical soil cores for return voyages.',
+    image: 'https://images.unsplash.com/photo-1612892483236-42d68a57623d?auto=format&fit=crop&w=1200&q=80',
+    featured: true,
+    status: 'Ongoing',
+    launchDate: 'July 30, 2020',
+    landingDate: 'February 18, 2021',
+    launchVehicle: 'Atlas V 541',
+    duration: '5+ Years (Active)',
+    objective: 'Seek signs of ancient microbial life and collect samples of rock and regolith for possible return to Earth.',
+    crew: ['Uncrewed (Robotic Rover + Ingenuity Helicopter)'],
+    agency: 'nasa',
+    milestones: [
+      { date: 'Jul 30, 2020', title: 'Launch', description: 'Launched from Cape Canaveral Space Force Station.' },
+      { date: 'Feb 18, 2021', title: 'Martian Landing', description: 'Touchdown in Jezero Crater using the sky crane landing system.' },
+      { date: 'Apr 19, 2021', title: 'Ingenuity Flight', description: 'The Ingenuity helicopter makes the first powered flight on another planet.' },
+      { date: 'Sep 2021', title: 'First Core Sample', description: 'Successfully cores and stores a rock sample from Jezero Crater.' }
+    ],
+    scienceResults: [
+      'Discovered signs of ancient organic compounds in Jezero Crater lake bed.',
+      'Proved powered aviation is possible in thin atmospheres using Ingenuity (72 flights total).',
+      'Tested MOXIE instrument, producing oxygen directly from Martian CO2.'
+    ],
+    patchUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/18/Mars_2020_patch.svg',
+    videoUrl: 'https://www.youtube.com/embed/4czjS9h4Fpg',
+    objectives: [
+      'Detect signs of past microbial habitability.',
+      'Collect and cache core rock/soil samples.',
+      'Extract breathable oxygen from carbon dioxide.',
+      'Operate first robotic atmospheric drone.'
+    ],
+    stats: {
+      'Samples Collected': '24 tubes',
+      'Ingenuity Flights': '72 flights',
+      'Distance Traversed': '28.1 km',
+      'Primary Systems': '7 science instruments'
+    }
+  },
+  {
+    id: 'artemis',
+    name: 'Artemis Program',
+    category: 'mission',
+    description: 'The Artemis program is a NASA-led spaceflight program to land the first woman and next man on the Moon. It aims to establish a permanent sustainable lunar research base.',
+    image: 'https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&w=1200&q=80',
+    featured: true,
+    status: 'Upcoming',
+    launchDate: 'November 16, 2022 (Artemis I)',
+    landingDate: 'Late 2026 (Artemis III Target)',
+    launchVehicle: 'Space Launch System (SLS)',
+    duration: 'Active Program',
+    objective: 'Land humans on the Moon, explore the lunar south pole, and establish a permanent presence before Mars voyages.',
+    crew: ['Reid Wiseman (Artemis II)', 'Victor Glover (Artemis II)', 'Christina Koch (Artemis II)', 'Jeremy Hansen (Artemis II)'],
+    agency: 'nasa',
+    milestones: [
+      { date: 'Nov 16, 2022', title: 'Artemis I Launch', description: 'Uncrewed test flight of SLS and Orion capsule orbits the Moon.' },
+      { date: 'Dec 11, 2022', title: 'Artemis I Splashdown', description: 'Orion splashdown in Pacific Ocean after 25 days in space.' },
+      { date: 'Late 2026', title: 'Artemis II (Crewed)', description: 'Crewed test flight in lunar orbit trajectory.' },
+      { date: '2028', title: 'Artemis III (Lunar Landing)', description: 'Target landing mission at the lunar South Pole.' }
+    ],
+    scienceResults: [
+      'Qualified the SLS heavy launcher and the Orion heat shield in lunar reentry speeds.',
+      'Mapped radiation doses in deep space using dummy mannequins.'
+    ],
+    patchUrl: 'https://upload.wikimedia.org/wikipedia/commons/c/ca/Artemis_program_patch.svg',
+    videoUrl: 'https://www.youtube.com/embed/dOl63sP8cjg',
+    objectives: [
+      'Land the first woman and person of color on the Moon.',
+      'Explore resources at the lunar South Pole.',
+      'Deploy the Gateway lunar space station.',
+      'Test deep-space spacesuits and modules.'
+    ],
+    stats: {
+      'SLS Thrust': '8.8 Million lbs',
+      'Orion Speed': '39,400 km/h',
+      'Member Nations': 'NASA, ESA, JAXA, CSA',
+      'Target Zone': 'Shackleton Crater'
+    }
   }
 ];
 

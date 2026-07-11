@@ -7,6 +7,9 @@ import { RootLayout } from './layouts/RootLayout';
 // Page Imports
 import { Home } from './pages/Home';
 import { Explore } from './pages/Explore';
+import { PlanetDetails } from './pages/PlanetDetails';
+import { MissionDetails } from './pages/MissionDetails';
+import { AstronautDetails } from './pages/AstronautDetails';
 import { Details } from './pages/Details';
 import { News } from './pages/News';
 import { Favorites } from './pages/Favorites';
@@ -33,6 +36,9 @@ function App() {
             <Route element={<RootLayout />}>
               <Route path="/" element={<Home />} />
               <Route path="/explore" element={<Explore />} />
+              <Route path="/explore/planet/:id" element={<PlanetDetails />} />
+              <Route path="/explore/mission/:id" element={<MissionDetails />} />
+              <Route path="/explore/astronaut/:id" element={<AstronautDetails />} />
               <Route path="/explore/:category/:id" element={<Details />} />
               <Route path="/news" element={<News />} />
               <Route path="/favorites" element={<Favorites />} />

@@ -93,7 +93,9 @@ export const mapApiPlanet = (apiBody: any): Planet => {
     explorationHistory: mockMatch?.explorationHistory || [
       'Prehistory: Observed by early astronomers in antiquity.',
       'Modern Era: Explored using telescopes and robotic probes.'
-    ]
+    ],
+    escapeVelocity: apiBody.escape ? `${(apiBody.escape / 1000).toFixed(2)} km/s` : mockMatch?.escapeVelocity || 'N/A',
+    density: apiBody.density ? `${apiBody.density} g/cm³` : mockMatch?.density || 'N/A'
   };
 };
 
@@ -169,7 +171,9 @@ export const mapApiAstronaut = (apiAstronaut: any): Astronaut => {
     achievements: mockMatch?.achievements || [
       `Flew in space ${flightCount} times.`,
       `Completed ${evaCount} spacewalking operations.`
-    ]
+    ],
+    careerTimeline: mockMatch?.careerTimeline || undefined,
+    awards: mockMatch?.awards || undefined
   };
 };
 
@@ -250,7 +254,11 @@ export const mapApiMission = (apiMission: any): Mission => {
     ],
     scienceResults: mockMatch?.scienceResults || [
       'Data mapping calibrations ongoing.'
-    ]
+    ],
+    patchUrl: mockMatch?.patchUrl || apiMission.patch_url || undefined,
+    videoUrl: mockMatch?.videoUrl || apiMission.video_url || undefined,
+    objectives: mockMatch?.objectives || undefined,
+    stats: mockMatch?.stats || undefined
   };
 };
 

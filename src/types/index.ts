@@ -20,6 +20,8 @@ export interface Planet extends BaseEntity {
   atmosphere: { [gas: string]: string };
   funFact: string;
   explorationHistory: string[];
+  escapeVelocity?: string;
+  density?: string;
 }
 
 export interface Moon extends BaseEntity {
@@ -45,6 +47,8 @@ export interface Astronaut extends BaseEntity {
   nationality: string;
   biography: string;
   achievements: string[];
+  careerTimeline?: { year: string; title: string; description: string; }[];
+  awards?: string[];
 }
 
 export interface Rocket extends BaseEntity {
@@ -91,6 +95,10 @@ export interface Mission extends BaseEntity {
   agency: string; // Agency ID or name
   milestones: MissionMilestone[];
   scienceResults: string[];
+  patchUrl?: string;
+  videoUrl?: string;
+  objectives?: string[];
+  stats?: Record<string, string>;
 }
 
 export interface NewsItem {
