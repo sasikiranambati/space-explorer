@@ -1,11 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { InteractiveStarfield } from '../components/InteractiveStarfield';
 import { NebulaBackground } from '../components/NebulaBackground';
+import { CommandPalette } from '../components/CommandPalette';
 
 export const RootLayout: React.FC = () => {
+  const [isCmdOpen, setIsCmdOpen] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsCmdOpen(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
     <div className="layout-container">
       {/* Background visual layers */}
@@ -22,6 +36,9 @@ export const RootLayout: React.FC = () => {
 
       {/* Footer System */}
       <Footer />
+
+      {/* Global search palette */}
+      <CommandPalette isOpen={isCmdOpen} onClose={() => setIsCmdOpen(false)} />
     </div>
   );
 };

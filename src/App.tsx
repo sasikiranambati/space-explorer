@@ -11,6 +11,8 @@ import { PlanetDetails } from './pages/PlanetDetails';
 import { MissionDetails } from './pages/MissionDetails';
 import { AstronautDetails } from './pages/AstronautDetails';
 import { RocketDetails } from './pages/RocketDetails';
+import { SolarSystem } from './pages/SolarSystem';
+import { Compare } from './pages/Compare';
 import { Details } from './pages/Details';
 import { News } from './pages/News';
 import { Favorites } from './pages/Favorites';
@@ -42,6 +44,8 @@ function App() {
               <Route path="/explore/astronaut/:id" element={<AstronautDetails />} />
               <Route path="/explore/rocket/:id" element={<RocketDetails />} />
               <Route path="/explore/:category/:id" element={<Details />} />
+              <Route path="/solar-system" element={<SolarSystem />} />
+              <Route path="/compare" element={<Compare />} />
               <Route path="/news" element={<News />} />
               <Route path="/favorites" element={<Favorites />} />
               <Route path="/about" element={<About />} />
