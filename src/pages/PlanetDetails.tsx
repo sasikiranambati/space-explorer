@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Compass, Moon, Heart, Clock, Activity,
-  ChevronRight, Globe, Gauge, Zap, Info, Award
+  ChevronRight, Globe, Gauge, Zap, Info, Award, Orbit
 } from 'lucide-react';
 import type { Planet } from '../types';
 import { useFavorites } from '../contexts/FavoritesContext';
@@ -12,6 +12,7 @@ import { useNasaImages } from '../hooks/useNasaImages';
 import { LoadingSkeleton } from '../components/LoadingSkeleton';
 import { ErrorState } from '../components/ErrorState';
 import { GlassCard } from '../components/GlassCard';
+import { PlanetViewer } from '../components/PlanetViewer';
 
 // Solar System planetary order for neighbor calculations
 const PLANET_ORDER = ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'];
@@ -38,6 +39,7 @@ export const PlanetDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { toggleFavorite, isFavorite } = useFavorites();
+  const [isViewerOpen, setIsViewerOpen] = useState(false);
 
   const planetId = id?.toLowerCase() || '';
 
@@ -176,32 +178,63 @@ export const PlanetDetails: React.FC = () => {
             </h1>
           </div>
 
-          <button
-            onClick={() => toggleFavorite(planet)}
-            style={{
-              background: favorited ? 'var(--color-accent)' : 'rgba(255, 255, 255, 0.05)',
-              border: `1px solid ${favorited ? 'var(--color-accent)' : 'rgba(255, 255, 255, 0.1)'}`,
-              color: favorited ? 'var(--bg-deep)' : 'var(--text-primary)',
-              padding: '12px 24px',
-              borderRadius: '12px',
-              fontWeight: 600,
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              boxShadow: favorited ? 'var(--shadow-glow)' : 'none',
-              transition: 'all var(--transition-fast)',
-            }}
-            onMouseOver={(e) => {
-              if (!favorited) e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-            }}
-            onMouseOut={(e) => {
-              if (!favorited) e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-            }}
-          >
-            <Heart size={18} fill={favorited ? 'currentColor' : 'none'} />
-            <span>{favorited ? 'Bookmarked' : 'Add Bookmark'}</span>
-          </button>
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+            <button
+              onClick={() => setIsViewerOpen(true)}
+              style={{
+                background: 'rgba(56, 189, 248, 0.1)',
+                border: '1px solid rgba(56, 189, 248, 0.3)',
+                color: 'var(--color-accent)',
+                padding: '12px 24px',
+                borderRadius: '12px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                boxShadow: '0 0 16px rgba(56, 189, 248, 0.08)',
+                transition: 'all var(--transition-fast)',
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.background = 'rgba(56, 189, 248, 0.2)';
+                e.currentTarget.style.borderColor = 'var(--color-accent)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.background = 'rgba(56, 189, 248, 0.1)';
+                e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.3)';
+              }}
+            >
+              <Orbit size={18} />
+              <span>View in 3D</span>
+            </button>
+
+            <button
+              onClick={() => toggleFavorite(planet)}
+              style={{
+                background: favorited ? 'var(--color-accent)' : 'rgba(255, 255, 255, 0.05)',
+                border: `1px solid ${favorited ? 'var(--color-accent)' : 'rgba(255, 255, 255, 0.1)'}`,
+                color: favorited ? 'var(--bg-deep)' : 'var(--text-primary)',
+                padding: '12px 24px',
+                borderRadius: '12px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                boxShadow: favorited ? 'var(--shadow-glow)' : 'none',
+                transition: 'all var(--transition-fast)',
+              }}
+              onMouseOver={(e) => {
+                if (!favorited) e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+              }}
+              onMouseOut={(e) => {
+                if (!favorited) e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+              }}
+            >
+              <Heart size={18} fill={favorited ? 'currentColor' : 'none'} />
+              <span>{favorited ? 'Bookmarked' : 'Add Bookmark'}</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -773,6 +806,16 @@ export const PlanetDetails: React.FC = () => {
           }
         }
       `}} />
+
+      {/* 3D Planet Viewer Immersive modal */}
+      <PlanetViewer
+        planetId={planet.id}
+        isOpen={isViewerOpen}
+        onClose={() => setIsViewerOpen(false)}
+        planetName={planet.name}
+        description={planet.description}
+        funFact={planet.funFact}
+      />
 
     </div>
   );

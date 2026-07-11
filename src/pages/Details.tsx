@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import type { EntityCategory } from '../types';
 import { useFavorites } from '../contexts/FavoritesContext';
@@ -9,13 +9,15 @@ import { StatCard } from '../components/StatCard';
 import { ErrorState } from '../components/ErrorState';
 import {
   Compass, Moon, User, Rocket, Landmark, Milestone,
-  Heart, Calendar, Award, BookOpen, Clock, Activity, FileText, ChevronRight
+  Heart, Calendar, Award, BookOpen, Clock, Activity, FileText, ChevronRight, Orbit
 } from 'lucide-react';
+import { PlanetViewer } from '../components/PlanetViewer';
 
 export const Details: React.FC = () => {
   const { category, id } = useParams<{ category: string; id: string }>();
   const navigate = useNavigate();
   const { toggleFavorite, isFavorite } = useFavorites();
+  const [isViewerOpen, setIsViewerOpen] = useState(false);
 
   const { data: entity, isLoading, isError } = useSpaceEntity(category as EntityCategory, id || '');
 
@@ -450,25 +452,56 @@ export const Details: React.FC = () => {
                   {entity.category}
                 </span>
 
-                {/* Favorite Bookmark Switch Button */}
-                <button
-                  onClick={() => toggleFavorite(entity)}
-                  style={{
-                    background: favorited ? 'rgba(239, 68, 68, 0.1)' : 'rgba(255, 255, 255, 0.02)',
-                    border: favorited ? '1px solid #ef4444' : '1px solid var(--border-color)',
-                    borderRadius: '50%',
-                    padding: '8px',
-                    cursor: 'pointer',
-                    color: favorited ? '#ef4444' : 'var(--text-muted)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    transition: 'all var(--transition-fast)',
-                  }}
-                  title={favorited ? 'Remove from bookmarks' : 'Add to bookmarks'}
-                >
-                  <Heart size={16} fill={favorited ? '#ef4444' : 'none'} />
-                </button>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  {(entity.category === 'planet' || entity.category === 'moon') && (
+                    <button
+                      onClick={() => setIsViewerOpen(true)}
+                      style={{
+                        background: 'rgba(56, 189, 248, 0.1)',
+                        border: '1px solid rgba(56, 189, 248, 0.3)',
+                        color: 'var(--color-accent)',
+                        padding: '6px 14px',
+                        borderRadius: '10px',
+                        fontSize: '0.8rem',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        transition: 'all var(--transition-fast)'
+                      }}
+                      onMouseOver={(e) => {
+                        e.currentTarget.style.background = 'rgba(56, 189, 248, 0.2)';
+                        e.currentTarget.style.borderColor = 'var(--color-accent)';
+                      }}
+                      onMouseOut={(e) => {
+                        e.currentTarget.style.background = 'rgba(56, 189, 248, 0.1)';
+                        e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.3)';
+                      }}
+                    >
+                      <Orbit size={12} />
+                      <span>3D View</span>
+                    </button>
+                  )}
+                  <button
+                    onClick={() => toggleFavorite(entity)}
+                    style={{
+                      background: favorited ? 'rgba(239, 68, 68, 0.1)' : 'rgba(255, 255, 255, 0.02)',
+                      border: favorited ? '1px solid #ef4444' : '1px solid var(--border-color)',
+                      borderRadius: '50%',
+                      padding: '8px',
+                      cursor: 'pointer',
+                      color: favorited ? '#ef4444' : 'var(--text-muted)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      transition: 'all var(--transition-fast)',
+                    }}
+                    title={favorited ? 'Remove from bookmarks' : 'Add to bookmarks'}
+                  >
+                    <Heart size={16} fill={favorited ? '#ef4444' : 'none'} />
+                  </button>
+                </div>
               </div>
 
               <h1 style={{ fontSize: '2rem', fontWeight: 700, marginTop: '4px' }}>{entity.name}</h1>
@@ -747,6 +780,15 @@ export const Details: React.FC = () => {
           }
         }
       `}} />
+      {/* 3D Planet Viewer Immersive modal */}
+      <PlanetViewer
+        planetId={entity.id}
+        isOpen={isViewerOpen}
+        onClose={() => setIsViewerOpen(false)}
+        planetName={entity.name}
+        description={entity.description}
+        funFact={(entity as any).funFact}
+      />
     </div>
   );
 };
