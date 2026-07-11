@@ -377,7 +377,16 @@ export const rockets: Rocket[] = [
     launches: 13,
     successRate: '100%',
     costPerLaunch: '$1.2 Billion (inflation-adjusted)',
-    propulsion: 'Stage 1: 5 F-1 engines (RP-1/LOX); Stage 2: 5 J-2 engines (LH2/LOX); Stage 3: 1 J-2 engine.'
+    propulsion: 'Stage 1: 5 F-1 engines (RP-1/LOX); Stage 2: 5 J-2 engines (LH2/LOX); Stage 3: 1 J-2 engine.',
+    engines: '5 F-1 (Stage 1), 5 J-2 (Stage 2), 1 J-2 (Stage 3)',
+    fuel: 'RP-1 / Liquid Oxygen (Stage 1), Liquid Hydrogen / Liquid Oxygen (Stages 2 & 3)',
+    timeline: [
+      { date: '1961', title: 'Program Initiation', description: 'NASA announces the Saturn V program to support the Apollo crewed lunar landing goal.' },
+      { date: 'Nov 9, 1967', title: 'Maiden Flight (Apollo 4)', description: 'First uncrewed test flight of the Saturn V launches successfully.' },
+      { date: 'Dec 1968', title: 'Apollo 8 Lunar Orbit', description: 'Saturn V launches the first crewed spacecraft to escape Earth orbit and circle the Moon.' },
+      { date: 'Jul 16, 1969', title: 'Apollo 11 Launch', description: 'Launches Neil Armstrong, Buzz Aldrin, and Michael Collins to the first lunar landing.' },
+      { date: 'May 14, 1973', title: 'Final Launch (Skylab)', description: 'Launches the Skylab space station into low Earth orbit, concluding the launcher series.' }
+    ]
   },
   {
     id: 'falcon-9',
@@ -398,7 +407,15 @@ export const rockets: Rocket[] = [
     launches: 330, // Approx
     successRate: '99.4%',
     costPerLaunch: '$67 Million',
-    propulsion: 'Stage 1: 9 Merlin 1D engines (RP-1/LOX); Stage 2: 1 Merlin Vacuum engine.'
+    propulsion: 'Stage 1: 9 Merlin 1D engines (RP-1/LOX); Stage 2: 1 Merlin Vacuum engine.',
+    engines: '9 Merlin 1D (Stage 1), 1 Merlin 1D Vacuum (Stage 2)',
+    fuel: 'RP-1 / Liquid Oxygen (Rocket Propellant 1 and LOX)',
+    timeline: [
+      { date: 'Jun 4, 2010', title: 'Maiden Flight (v1.0)', description: 'First Falcon 9 test flight launches successfully from Cape Canaveral.' },
+      { date: 'Dec 21, 2015', title: 'First Orbital Landing', description: 'Falcon 9 Full Thrust lands its first-stage booster back at LZ-1, a historic milestone.' },
+      { date: 'Mar 30, 2017', title: 'First Reflight Booster', description: 'SpaceX successfully relaunches and lands a previously flown first-stage booster.' },
+      { date: 'May 30, 2020', title: 'Demo-2 Crewed Launch', description: 'Launches astronauts Bob Behnken and Doug Hurley to the ISS, restoring US orbital flights.' }
+    ]
   },
   {
     id: 'falcon-heavy',
@@ -419,7 +436,14 @@ export const rockets: Rocket[] = [
     launches: 9,
     successRate: '100%',
     costPerLaunch: '$97 Million to $150 Million',
-    propulsion: '27 Merlin 1D engines across three core stages generating 5 million pounds of thrust at launch.'
+    propulsion: '27 Merlin 1D engines across three core stages generating 5 million pounds of thrust at launch.',
+    engines: '27 Merlin 1D (across 3 strapped-on core boosters), 1 Merlin 1D Vacuum (Stage 2)',
+    fuel: 'RP-1 / Liquid Oxygen (LOX)',
+    timeline: [
+      { date: 'Feb 6, 2018', title: 'Maiden Flight', description: 'Launches Elon Musk\'s Tesla Roadster into a heliocentric orbit with double booster landing.' },
+      { date: 'Apr 11, 2019', title: 'First Commercial Flight', description: 'Launches Arabsat-6A and successfully lands all three booster cores.' },
+      { date: 'Nov 1, 2022', title: 'USSF-44 Military Mission', description: 'First classified national security flight for the US Space Force.' }
+    ]
   },
   {
     id: 'starship',
@@ -440,7 +464,15 @@ export const rockets: Rocket[] = [
     launches: 4, // Integration tests
     successRate: 'Ongoing testing',
     costPerLaunch: '$10 Million (target projection)',
-    propulsion: 'Super Heavy: 33 Raptor engines (Liquid Methane/LOX); Starship: 6 Raptor engines (3 sea-level, 3 vacuum).'
+    propulsion: 'Super Heavy: 33 Raptor engines (Liquid Methane/LOX); Starship: 6 Raptor engines (3 sea-level, 3 vacuum).',
+    engines: '33 Raptor 2 (Super Heavy Booster), 6 Raptor 2 (Starship Second Stage)',
+    fuel: 'Subcooled Liquid Methane (CH4) / Liquid Oxygen (LOX)',
+    timeline: [
+      { date: 'Aug 2020', title: 'Starhopper & Early Hops', description: 'Early single-engine Raptor prototypes complete 150m vertical flight hops in Boca Chica.' },
+      { date: 'May 5, 2021', title: 'SN15 Flight & Soft Landing', description: 'Starship prototype SN15 launches to 10km altitude and lands successfully.' },
+      { date: 'Apr 20, 2023', title: 'Integrated Flight Test 1', description: 'First orbital test flight of Starship on top of Super Heavy booster.' },
+      { date: 'Jun 6, 2024', title: 'Integrated Flight Test 4', description: 'First successful soft landing of both booster in Gulf of Mexico and ship in Indian Ocean.' }
+    ]
   },
   {
     id: 'sls',

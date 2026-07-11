@@ -201,7 +201,10 @@ export const mapApiRocket = (apiRocket: any): Rocket => {
     launches: apiRocket.total_launch_count || mockMatch?.launches || 0,
     successRate: apiRocket.consecutive_successful_launches ? '99%' : (mockMatch?.successRate || 'N/A'),
     costPerLaunch: mockMatch?.costPerLaunch || 'N/A',
-    propulsion: apiRocket.info_url ? `Specs profile URL: ${apiRocket.info_url}` : (mockMatch?.propulsion || 'Liquid propellant core configuration.')
+    propulsion: apiRocket.info_url ? `Specs profile URL: ${apiRocket.info_url}` : (mockMatch?.propulsion || 'Liquid propellant core configuration.'),
+    engines: mockMatch?.engines || undefined,
+    fuel: mockMatch?.fuel || undefined,
+    timeline: mockMatch?.timeline || undefined
   };
 };
 

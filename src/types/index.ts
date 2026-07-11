@@ -65,6 +65,9 @@ export interface Rocket extends BaseEntity {
   successRate: string;
   costPerLaunch: string;
   propulsion: string;
+  engines?: string;
+  fuel?: string;
+  timeline?: { date: string; title: string; description: string; }[];
 }
 
 export interface Agency extends BaseEntity {
