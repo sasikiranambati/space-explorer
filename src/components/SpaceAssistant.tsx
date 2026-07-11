@@ -216,25 +216,76 @@ export const SpaceAssistant: React.FC = () => {
     setIsTyping(true);
     setActiveFollowups([]);
 
-    // Simulate AI thinking and typing delay
+    const puter = (window as any).puter;
+
+    // Check if Puter AI is loaded in window
+    if (puter && puter.ai) {
+      // System instructions embedded in prompt to align AI personality
+      const aiPrompt = `You are Orion, a premium AI Space Assistant for the Space Explorer application. Answer the following question scientifically, professionally, and in character using clear markdown formatting: ${text}`;
+      
+      puter.ai.chat(aiPrompt)
+        .then((response: any) => {
+          let responseText = '';
+          if (typeof response === 'string') {
+            responseText = response;
+          } else if (response && response.message && response.message.content) {
+            responseText = response.message.content;
+          } else if (response && typeof response.toString === 'function') {
+            responseText = response.toString();
+          } else {
+            responseText = "Telemetry link disrupted. Unable to retrieve deep space response.";
+          }
+
+          // Generate context-aware followups based on keywords in response
+          const responseLower = responseText.toLowerCase();
+          let followupsList = ["Why is Mars red?", "How does a black hole work?", "Which planet has the strongest gravity?"];
+          
+          if (responseLower.includes('mars')) {
+            followupsList = ["Did Mars ever have water?", "What are the Moons of Mars?"];
+          } else if (responseLower.includes('venus')) {
+            followupsList = ["Why is Venus hotter than Mercury?", "What was the Venera mission?"];
+          } else if (responseLower.includes('pluto')) {
+            followupsList = ["What did New Horizons discover on Pluto?", "How cold is Pluto?"];
+          } else if (responseLower.includes('black hole') || responseLower.includes('singularity')) {
+            followupsList = ["What is a wormhole?", "Can a black hole die?"];
+          } else if (responseLower.includes('gravity') || responseLower.includes('mass')) {
+            followupsList = ["What is microgravity?", "Which planet has the weakest gravity?"];
+          }
+
+          const aiMsg: Message = {
+            id: Math.random().toString(),
+            sender: 'ai',
+            text: responseText,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          };
+
+          setMessages(prev => [...prev, aiMsg]);
+          setIsTyping(false);
+          setActiveFollowups(followupsList);
+        })
+        .catch((err: any) => {
+          console.warn('Puter AI request failed, reverting to local knowledge telemetry:', err);
+          executeLocalFallback(text);
+        });
+    } else {
+      executeLocalFallback(text);
+    }
+  };
+
+  const executeLocalFallback = (text: string) => {
+    // Revert to local pre-compiled responses
     setTimeout(() => {
       let responseText = '';
       let followupsList: string[] = [];
-
       const queryNormalized = text.trim();
 
-      // 1. Direct suggested questions checks
       if (SUGGESTED_RESPONSES[queryNormalized]) {
         responseText = SUGGESTED_RESPONSES[queryNormalized].answer;
         followupsList = SUGGESTED_RESPONSES[queryNormalized].followups;
-      }
-      // 2. Secondary follow-up checks
-      else if (SECONDARY_RESPONSES[queryNormalized]) {
+      } else if (SECONDARY_RESPONSES[queryNormalized]) {
         responseText = SECONDARY_RESPONSES[queryNormalized].answer;
         followupsList = SECONDARY_RESPONSES[queryNormalized].followups;
-      }
-      // 3. Custom keywords search
-      else {
+      } else {
         const queryLower = queryNormalized.toLowerCase();
         const matched = KEYWORD_RESPONSES.find(res =>
           res.keywords.some(keyword => queryLower.includes(keyword))
@@ -259,7 +310,7 @@ export const SpaceAssistant: React.FC = () => {
       setMessages(prev => [...prev, aiMsg]);
       setIsTyping(false);
       setActiveFollowups(followupsList);
-    }, 1200);
+    }, 1000);
   };
 
   const handleClearChat = () => {
