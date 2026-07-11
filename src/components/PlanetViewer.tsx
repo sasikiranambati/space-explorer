@@ -33,10 +33,40 @@ export const PlanetViewer: React.FC<PlanetViewerProps> = ({
   const [zoomPercent, setZoomPercent] = useState(100);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showInfoPanel, setShowInfoPanel] = useState(false);
+  const [epicTextureUrl, setEpicTextureUrl] = useState<string | null>(null);
+  const [isEpicLoading, setIsEpicLoading] = useState(false);
 
   // References
   const containerRef = useRef<HTMLDivElement>(null);
   const controlsRef = useRef<any>(null);
+
+  // 2. Fetch NASA EPIC Real Satellite Image for Earth
+  React.useEffect(() => {
+    if (normalizedId === 'earth' && isOpen) {
+      setIsEpicLoading(true);
+      fetch('https://api.nasa.gov/EPIC/api/natural/images?api_key=NJcmwGH6hTXm39CZXMWzxmMLgE1YcRp5IOagezfL')
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.length > 0) {
+            const latest = data[0];
+            const imgName = latest.image;
+            const dateStr = latest.date; // e.g. "2026-07-10 00:16:47"
+            const [datePart] = dateStr.split(' ');
+            const [yr, mo, dy] = datePart.split('-');
+            const url = `https://api.nasa.gov/EPIC/archive/natural/${yr}/${mo}/${dy}/png/${imgName}.png?api_key=NJcmwGH6hTXm39CZXMWzxmMLgE1YcRp5IOagezfL`;
+            setEpicTextureUrl(url);
+          }
+        })
+        .catch(err => {
+          console.warn('Failed to load NASA EPIC satellite photo, falling back to static map:', err);
+        })
+        .finally(() => {
+          setIsEpicLoading(false);
+        });
+    } else {
+      setEpicTextureUrl(null);
+    }
+  }, [normalizedId, isOpen]);
 
   // 2. Fullscreen toggle
   const toggleFullscreen = () => {
@@ -152,6 +182,7 @@ export const PlanetViewer: React.FC<PlanetViewerProps> = ({
                 autoRotate={autoRotate}
                 onZoomChange={setZoomPercent}
                 controlsRef={controlsRef}
+                epicTextureUrl={epicTextureUrl}
               />
 
               {/* Suspense Spinner / Overlay */}
@@ -174,6 +205,55 @@ export const PlanetViewer: React.FC<PlanetViewerProps> = ({
               >
                 <Compass size={14} style={{ color: 'var(--color-accent)' }} /> Drag to Orbit • Scroll to Zoom
               </div>
+
+              {/* Live NASA Satellite Loading Status */}
+              {isEpicLoading && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '16px',
+                    left: '260px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    background: 'rgba(56, 189, 248, 0.12)',
+                    padding: '8px 14px',
+                    borderRadius: '10px',
+                    fontSize: '0.8rem',
+                    color: 'var(--color-accent)',
+                    border: '1px solid rgba(56, 189, 248, 0.25)',
+                    zIndex: 5
+                  }}
+                >
+                  <RefreshCw size={12} style={{ animation: 'spin 2s linear infinite' }} />
+                  <span>Requesting Live DSCOVR Satellite Image...</span>
+                </div>
+              )}
+
+              {/* Live NASA Satellite Loaded Badge */}
+              {epicTextureUrl && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '16px',
+                    left: '260px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    background: 'rgba(16, 185, 129, 0.12)',
+                    padding: '8px 14px',
+                    borderRadius: '10px',
+                    fontSize: '0.8rem',
+                    color: '#10b981',
+                    border: '1px solid rgba(16, 185, 129, 0.25)',
+                    fontWeight: 600,
+                    zIndex: 5
+                  }}
+                >
+                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
+                  <span>📡 Live NASA DSCOVR Satellite Image Loaded</span>
+                </div>
+              )}
 
               {/* Zoom Telemetry Indicator Overlay */}
               <div

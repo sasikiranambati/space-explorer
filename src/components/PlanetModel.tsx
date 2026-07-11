@@ -9,17 +9,18 @@ interface PlanetSphereProps {
   autoRotate: boolean;
   onZoomChange: (zoom: number) => void;
   controlsRef: React.RefObject<any>;
+  epicTextureUrl?: string | null;
 }
 
 // Inner component inside the Canvas context
-const PlanetSphere: React.FC<PlanetSphereProps> = ({ config, autoRotate, onZoomChange, controlsRef }) => {
+const PlanetSphere: React.FC<PlanetSphereProps> = ({ config, autoRotate, onZoomChange, controlsRef, epicTextureUrl }) => {
   const { camera } = useThree();
   const sphereRef = useRef<THREE.Mesh>(null);
   const cloudsRef = useRef<THREE.Mesh>(null);
 
   // 1. Load Textures (PBR standard maps)
   const textureMaps: Record<string, string> = {
-    map: config.textureUrl
+    map: (config.id === 'earth' && epicTextureUrl) ? epicTextureUrl : config.textureUrl
   };
   if (config.bumpMapUrl) textureMaps.bumpMap = config.bumpMapUrl;
   if (config.normalMapUrl) textureMaps.normalMap = config.normalMapUrl;
@@ -130,9 +131,10 @@ interface PlanetModelProps {
   autoRotate: boolean;
   onZoomChange: (zoom: number) => void;
   controlsRef: React.RefObject<any>;
+  epicTextureUrl?: string | null;
 }
 
-export const PlanetModel: React.FC<PlanetModelProps> = ({ config, autoRotate, onZoomChange, controlsRef }) => {
+export const PlanetModel: React.FC<PlanetModelProps> = ({ config, autoRotate, onZoomChange, controlsRef, epicTextureUrl }) => {
   return (
     <Canvas
       camera={{ position: [0, 0, 8.5], fov: 45 }}
@@ -151,6 +153,7 @@ export const PlanetModel: React.FC<PlanetModelProps> = ({ config, autoRotate, on
           autoRotate={autoRotate}
           onZoomChange={onZoomChange}
           controlsRef={controlsRef}
+          epicTextureUrl={epicTextureUrl}
         />
       </Suspense>
     </Canvas>
