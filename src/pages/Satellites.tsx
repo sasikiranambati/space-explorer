@@ -429,66 +429,68 @@ export const Satellites: React.FC = () => {
                       }}
                     />
 
-                    {/* SVG Overlay containing active satellite positions and orbits */}
-                    <svg
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        zIndex: 3,
-                        overflow: 'visible'
-                      }}
-                    >
-                      {/* Orbit Path Layer */}
-                      {paths.map((p, index) => (
-                        <motion.path
-                          key={`${selectedSat.id}-${index}`}
-                          d={p.d}
-                          fill="none"
-                          stroke="var(--color-accent)"
-                          strokeWidth="1.5"
-                          strokeDasharray="4 3"
-                          initial={{ pathLength: 0 }}
-                          animate={{ pathLength: 1 }}
-                          transition={{ duration: 0.5 }}
-                          style={{ filter: 'drop-shadow(0 0 3px var(--color-accent))' }}
-                        />
-                      ))}
+                  {/* SVG Overlay containing active satellite positions and orbits */}
+                  <svg
+                    viewBox="0 0 100 100"
+                    preserveAspectRatio="none"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      zIndex: 3,
+                      overflow: 'visible'
+                    }}
+                  >
+                    {/* Orbit Path Layer */}
+                    {paths.map((p, index) => (
+                      <motion.path
+                        key={`${selectedSat.id}-${index}`}
+                        d={p.d}
+                        fill="none"
+                        stroke="var(--color-accent)"
+                        strokeWidth="0.25"
+                        strokeDasharray="0.8 0.6"
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 0.5 }}
+                        style={{ filter: 'drop-shadow(0 0 0.5px var(--color-accent))' }}
+                      />
+                    ))}
 
-                      {/* Satellite Active Indicator (Pulse Rings) */}
-                      <g key={selectedSat.id} transform={`translate(${currentPosPercent.x * (100 / 100)}%, ${currentPosPercent.y * (100 / 100)}%)`} style={{ transformBox: 'fill-box' }}>
-                        {/* Pulse circle 1 */}
-                        <circle
-                          r="18"
-                          fill="none"
-                          stroke="var(--color-accent)"
-                          strokeWidth="1"
-                          style={{
-                            transformOrigin: 'center',
-                            animation: 'pulse-radar 2s cubic-bezier(0.215, 0.610, 0.355, 1) infinite'
-                          }}
-                        />
-                        {/* Pulse circle 2 */}
-                        <circle
-                          r="10"
-                          fill="none"
-                          stroke="var(--color-accent)"
-                          strokeWidth="1.5"
-                          style={{
-                            transformOrigin: 'center',
-                            animation: 'pulse-radar 2s cubic-bezier(0.215, 0.610, 0.355, 1) 0.6s infinite'
-                          }}
-                        />
-                        {/* Solid Center Dot */}
-                        <circle
-                          r="4"
-                          fill="#00ffd5"
-                          style={{ filter: 'drop-shadow(0 0 6px #00ffd5)' }}
-                        />
-                      </g>
-                    </svg>
+                    {/* Satellite Active Indicator (Pulse Rings) */}
+                    <g key={selectedSat.id} transform={`translate(${currentPosPercent.x}, ${currentPosPercent.y})`} style={{ transformBox: 'fill-box' }}>
+                      {/* Pulse circle 1 */}
+                      <circle
+                        r="1.8"
+                        fill="none"
+                        stroke="var(--color-accent)"
+                        strokeWidth="0.1"
+                        style={{
+                          transformOrigin: 'center',
+                          animation: 'pulse-radar 2s cubic-bezier(0.215, 0.610, 0.355, 1) infinite'
+                        }}
+                      />
+                      {/* Pulse circle 2 */}
+                      <circle
+                        r="1.0"
+                        fill="none"
+                        stroke="var(--color-accent)"
+                        strokeWidth="0.15"
+                        style={{
+                          transformOrigin: 'center',
+                          animation: 'pulse-radar 2s cubic-bezier(0.215, 0.610, 0.355, 1) 0.6s infinite'
+                        }}
+                      />
+                      {/* Solid Center Dot */}
+                      <circle
+                        r="0.4"
+                        fill="#00ffd5"
+                        style={{ filter: 'drop-shadow(0 0 1px #00ffd5)' }}
+                      />
+                    </g>
+                  </svg>
                     
                     {/* Floating Coordinates Indicator */}
                     <div style={{
