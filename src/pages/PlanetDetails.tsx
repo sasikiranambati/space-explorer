@@ -5,10 +5,12 @@ import {
   Compass, Moon, Heart, Clock, Activity,
   ChevronRight, Globe, Gauge, Zap, Info, Award, Orbit
 } from 'lucide-react';
-import type { Planet } from '../types';
+import type { Planet, Moon as MoonType } from '../types';
 import { useFavorites } from '../contexts/FavoritesContext';
+import { moons as mockMoons } from '../services/mockData';
 import { useSpaceEntity } from '../hooks/useSpaceEntity';
 import { useNasaImages } from '../hooks/useNasaImages';
+import { Search, SlidersHorizontal } from 'lucide-react';
 import { LoadingSkeleton } from '../components/LoadingSkeleton';
 import { ErrorState } from '../components/ErrorState';
 import { GlassCard } from '../components/GlassCard';
@@ -59,6 +61,10 @@ export const PlanetDetails: React.FC = () => {
   // 5. Gallery Lightbox State
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
 
+  // 6. Moons Explorer Filter States
+  const [moonSearch, setMoonSearch] = useState('');
+  const [moonSort, setMoonSort] = useState<'name' | 'radius' | 'period' | 'discovery'>('name');
+
   if (isEntityLoading) {
     return (
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 24px' }}>
@@ -92,6 +98,31 @@ export const PlanetDetails: React.FC = () => {
     const nextId = PLANET_ORDER[planetIdx + 1];
     relatedPlanets.push({ id: nextId, name: nextId.charAt(0).toUpperCase() + nextId.slice(1) });
   }
+
+  // 7. Find all moons belonging to this planet
+  const planetMoons = mockMoons.filter(m => m.planet === planetId);
+
+  // Filter and sort moons
+  const filteredMoons = planetMoons
+    .filter(m => m.name.toLowerCase().includes(moonSearch.toLowerCase()))
+    .sort((a, b) => {
+      if (moonSort === 'radius') {
+        const radA = parseFloat(a.radius.replace(/,/g, ''));
+        const radB = parseFloat(b.radius.replace(/,/g, ''));
+        return radB - radA; // Descending size
+      }
+      if (moonSort === 'period') {
+        const perA = parseFloat(a.orbitalPeriod);
+        const perB = parseFloat(b.orbitalPeriod);
+        return perA - perB; // Ascending period
+      }
+      if (moonSort === 'discovery') {
+        if (a.discoveryYear === 'Prehistoric') return -1;
+        if (b.discoveryYear === 'Prehistoric') return 1;
+        return parseInt(a.discoveryYear || '0') - parseInt(b.discoveryYear || '0');
+      }
+      return a.name.localeCompare(b.name);
+    });
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 24px', display: 'flex', flexDirection: 'column', gap: '32px' }}>
@@ -692,6 +723,144 @@ export const PlanetDetails: React.FC = () => {
           })}
         </div>
       </GlassCard>
+
+      {/* Moons Explorer Section */}
+      {planetMoons.length > 0 && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '20px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+            <div>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Moon size={22} style={{ color: 'var(--color-accent)' }} /> Satellites Registry ({planetMoons.length})
+              </h2>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: '4px 0 0 0' }}>
+                Inspect orbital moons orbiting {planet.name}’s gravitational pull.
+              </p>
+            </div>
+
+            {/* Moons Search & Sort Filters */}
+            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+              {/* Search */}
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                <Search size={14} style={{ position: 'absolute', left: '12px', color: 'var(--text-muted)' }} />
+                <input
+                  type="text"
+                  placeholder="Search moons..."
+                  value={moonSearch}
+                  onChange={(e) => setMoonSearch(e.target.value)}
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.02)',
+                    border: '1px solid var(--border-color)',
+                    borderRadius: '10px',
+                    padding: '8px 12px 8px 34px',
+                    color: 'white',
+                    fontSize: '0.85rem',
+                    outline: 'none',
+                    width: '180px',
+                    transition: 'all var(--transition-fast)'
+                  }}
+                  onFocus={(e) => (e.currentTarget.style.borderColor = 'var(--color-accent)')}
+                  onBlur={(e) => (e.currentTarget.style.borderColor = 'var(--border-color)')}
+                />
+              </div>
+
+              {/* Sort Dropdown */}
+              <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(255, 255, 255, 0.02)', border: '1px solid var(--border-color)', borderRadius: '10px', padding: '0 10px' }}>
+                <SlidersHorizontal size={14} style={{ marginRight: '6px', color: 'var(--text-muted)' }} />
+                <select
+                  value={moonSort}
+                  onChange={(e: any) => setMoonSort(e.target.value)}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    color: 'var(--text-secondary)',
+                    fontSize: '0.85rem',
+                    outline: 'none',
+                    cursor: 'pointer',
+                    padding: '8px 0'
+                  }}
+                >
+                  <option value="name" style={{ background: 'var(--bg-deep)' }}>Name (A-Z)</option>
+                  <option value="radius" style={{ background: 'var(--bg-deep)' }}>Size (Largest)</option>
+                  <option value="period" style={{ background: 'var(--bg-deep)' }}>Orbit (Shortest)</option>
+                  <option value="discovery" style={{ background: 'var(--bg-deep)' }}>Discovery (Oldest)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Moons Grid */}
+          {filteredMoons.length > 0 ? (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '20px' }}>
+              {filteredMoons.map((moon: MoonType) => {
+                const has3D = moon.id === 'moon';
+
+                return (
+                  <Link key={moon.id} to={`/explore/moon/${moon.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <GlassCard hoverScale={true} style={{ padding: '0', overflow: 'hidden', borderRadius: '16px', height: '100%', display: 'flex', flexDirection: 'column', border: '1px solid rgba(255, 255, 255, 0.04)' }}>
+                      {/* Moon Card Image */}
+                      <div style={{ height: '140px', overflow: 'hidden', position: 'relative' }}>
+                        <img
+                          src={moon.image}
+                          alt={moon.name}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                        {/* 3D View Badge if available */}
+                        {has3D && (
+                          <div style={{
+                            position: 'absolute',
+                            top: '12px',
+                            right: '12px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            background: 'rgba(56, 189, 248, 0.18)',
+                            backdropFilter: 'blur(4px)',
+                            border: '1px solid rgba(56, 189, 248, 0.4)',
+                            borderRadius: '8px',
+                            padding: '4px 8px',
+                            color: 'var(--color-accent)',
+                            fontSize: '0.7rem',
+                            fontWeight: 700
+                          }}>
+                            <Orbit size={10} style={{ animation: 'spin 4s linear infinite' }} /> 3D Model
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Moon Specs Details */}
+                      <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px', flexGrow: 1 }}>
+                        <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', margin: 0 }}>
+                          {moon.name}
+                        </h3>
+
+                        {/* Specs grid */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.02)', paddingBottom: '4px' }}>
+                            <span>Radius:</span>
+                            <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{moon.radius}</span>
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.02)', paddingBottom: '4px' }}>
+                            <span>Orbital Period:</span>
+                            <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{moon.orbitalPeriod}</span>
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '2px' }}>
+                            <span>Discovered:</span>
+                            <span style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{moon.discoveryYear}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </GlassCard>
+                  </Link>
+                );
+              })}
+            </div>
+          ) : (
+            <GlassCard style={{ padding: '32px', textAlign: 'center', color: 'var(--text-muted)' }}>
+              No moons matched the filter criteria.
+            </GlassCard>
+          )}
+        </div>
+      )}
 
       {/* 7. Neighbor Navigation Links */}
       {relatedPlanets.length > 0 && (

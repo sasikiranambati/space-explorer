@@ -147,7 +147,8 @@ export const moons: Moon[] = [
       '1969: Neil Armstrong and Buzz Aldrin become the first humans to walk on the Moon during Apollo 11.',
       '1972: Gene Cernan becomes the last human to walk on the Moon during Apollo 17.',
       '2019: China\'s Chang\'e 4 completes the first soft landing on the far side of the Moon.'
-    ]
+    ],
+    discoveryYear: 'Prehistoric'
   },
   {
     id: 'europa',
@@ -168,7 +169,71 @@ export const moons: Moon[] = [
       '1979: Voyager 1 and Voyager 2 send back detailed images of the intersecting cracks in its ice.',
       '1995-2003: Galileo spacecraft collects magnetic data indicating a subsurface salty ocean.',
       'Planned: NASA\'s Europa Clipper mission launches to perform multiple close flybys.'
-    ]
+    ],
+    discoveryYear: '1610'
+  },
+  {
+    id: 'io',
+    name: 'Io',
+    category: 'moon',
+    description: 'Io is the innermost of the four Galilean moons of Jupiter. It is the most geologically active body in the Solar System, with over 400 active volcanoes spewing sulfur and silicate lava.',
+    image: 'https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?auto=format&fit=crop&w=1200&q=80',
+    featured: false,
+    planet: 'jupiter',
+    mass: '8.93 × 10²² kg',
+    radius: '1,821.6 km',
+    gravity: '1.796 m/s²',
+    orbitalPeriod: '1.77 Days',
+    temperature: '-180°C to -130°C',
+    funFact: 'Io\'s volcanic activity is powered by tidal heating, caused by the gravitational friction of orbiting close to Jupiter and being pulled by neighboring moons.',
+    explorationHistory: [
+      '1610: Galileo Galilei discovers Io.',
+      '1979: Voyager 1 captures volcanic plumes rising 300 km above the surface.',
+      '1996-2001: Galileo spacecraft performs close flybys, mapping hot spots.'
+    ],
+    discoveryYear: '1610'
+  },
+  {
+    id: 'ganymede',
+    name: 'Ganymede',
+    category: 'moon',
+    description: 'Ganymede is the largest moon in the Solar System. It is even larger than the planet Mercury and the dwarf planet Pluto. It is the only moon known to possess its own magnetic field.',
+    image: 'https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&w=1200&q=80',
+    featured: false,
+    planet: 'jupiter',
+    mass: '1.481 × 10²³ kg',
+    radius: '2,634.1 km',
+    gravity: '1.428 m/s²',
+    orbitalPeriod: '7.15 Days',
+    temperature: '-203°C to -121°C',
+    funFact: 'Ganymede contains a subsurface saltwater ocean that is believed to contain more water than all of Earth\'s oceans combined.',
+    explorationHistory: [
+      '1610: Galileo Galilei discovers Ganymede.',
+      '1979: Pioneer and Voyager probes capture its grooved ice terrain.',
+      '1996: Galileo spacecraft confirms its intrinsic magnetic field.'
+    ],
+    discoveryYear: '1610'
+  },
+  {
+    id: 'callisto',
+    name: 'Callisto',
+    category: 'moon',
+    description: 'Callisto is the second-largest moon of Jupiter. It is the most heavily cratered object in the Solar System, with an ancient, battered surface of ice and rock.',
+    image: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=1200&q=80',
+    featured: false,
+    planet: 'jupiter',
+    mass: '1.076 × 10²³ kg',
+    radius: '2,410.3 km',
+    gravity: '1.236 m/s²',
+    orbitalPeriod: '16.69 Days',
+    temperature: '-193°C to -108°C',
+    funFact: 'Because of its low radiation environment and ancient surface, Callisto is considered the most suitable site for a future human base in the Jovian system.',
+    explorationHistory: [
+      '1610: Galileo Galilei discovers Callisto.',
+      '1979: Voyager flybys map its massive Valhalla crater impact structure.',
+      '1997: Galileo spacecraft details its ice-covered surface.'
+    ],
+    discoveryYear: '1610'
   },
   {
     id: 'titan',
@@ -188,7 +253,8 @@ export const moons: Moon[] = [
       '1655: Christiaan Huygens discovers Titan.',
       '1980: Voyager 1 flies by, but its cameras cannot pierce the thick orange atmospheric haze.',
       '2005: ESA\'s Huygens probe successfully lands on Titan\'s surface, transmitting photos of icy round pebbles and drainage channels.'
-    ]
+    ],
+    discoveryYear: '1655'
   },
   {
     id: 'enceladus',
@@ -208,7 +274,8 @@ export const moons: Moon[] = [
       '1789: William Herschel discovers Enceladus.',
       '2005: Cassini spacecraft starts close flybys, detecting massive plumes of water vapor and sodium.',
       '2015: Cassini flies directly through the plumes, confirming hydrothermal activity on the ocean floor.'
-    ]
+    ],
+    discoveryYear: '1789'
   }
 ];
 

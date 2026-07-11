@@ -135,7 +135,8 @@ export const mapApiMoon = (apiBody: any): Moon => {
     explorationHistory: mockMatch?.explorationHistory || [
       'First flyby: Recorded during telescope grids.',
       'Modern exploration: Surveyed by flyby planetary probes.'
-    ]
+    ],
+    discoveryYear: mockMatch?.discoveryYear || (apiBody.discoveryDate ? apiBody.discoveryDate.split('/').pop() : 'N/A')
   };
 };
 

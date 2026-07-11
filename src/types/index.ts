@@ -33,6 +33,7 @@ export interface Moon extends BaseEntity {
   temperature: string;
   funFact: string;
   explorationHistory: string[];
+  discoveryYear?: string;
 }
 
 export interface Astronaut extends BaseEntity {
