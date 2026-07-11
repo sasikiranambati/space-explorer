@@ -18,6 +18,7 @@ import { News } from './pages/News';
 import { Favorites } from './pages/Favorites';
 import { About } from './pages/About';
 import { MoonDetails } from './pages/MoonDetails';
+import { Satellites } from './pages/Satellites';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -47,6 +48,7 @@ function App() {
               <Route path="/explore/moon/:id" element={<MoonDetails />} />
               <Route path="/explore/:category/:id" element={<Details />} />
               <Route path="/solar-system" element={<SolarSystem />} />
+              <Route path="/satellites" element={<Satellites />} />
               <Route path="/compare" element={<Compare />} />
               <Route path="/news" element={<News />} />
               <Route path="/favorites" element={<Favorites />} />
