@@ -155,11 +155,57 @@ export const Satellites: React.FC = () => {
   const [timeMs, setTimeMs] = useState<number>(Date.now());
   const [syncCountdown, setSyncCountdown] = useState<number>(30);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [liveCoords, setLiveCoords] = useState<Record<string, { lat: number; lon: number; altitude: number; speed: number }>>({});
 
   // Initial mock loading state
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 800);
     return () => clearTimeout(timer);
+  }, []);
+
+  // Live coordinates fetch from api.wheretheiss.at
+  useEffect(() => {
+    const fetchLiveCoords = async () => {
+      try {
+        const issRes = await fetch('https://api.wheretheiss.at/v1/satellites/25544');
+        if (issRes.ok) {
+          const data = await issRes.json();
+          setLiveCoords(prev => ({
+            ...prev,
+            iss: {
+              lat: Number(data.latitude),
+              lon: Number(data.longitude),
+              altitude: Number(data.altitude),
+              speed: Number(data.velocity)
+            }
+          }));
+        }
+      } catch (err) {
+        console.warn('ISS live coordinates offline:', err);
+      }
+
+      try {
+        const hubbleRes = await fetch('https://api.wheretheiss.at/v1/satellites/20580');
+        if (hubbleRes.ok) {
+          const data = await hubbleRes.json();
+          setLiveCoords(prev => ({
+            ...prev,
+            hubble: {
+              lat: Number(data.latitude),
+              lon: Number(data.longitude),
+              altitude: Number(data.altitude),
+              speed: Number(data.velocity)
+            }
+          }));
+        }
+      } catch (err) {
+        console.warn('Hubble live coordinates offline:', err);
+      }
+    };
+
+    fetchLiveCoords();
+    const interval = setInterval(fetchLiveCoords, 10000); // refresh API coordinates every 10 seconds
+    return () => clearInterval(interval);
   }, []);
 
   // Update time and countdown
@@ -169,7 +215,6 @@ export const Satellites: React.FC = () => {
       setTimeMs(Date.now());
       setSyncCountdown(prev => {
         if (prev <= 1) {
-          // Re-sync event triggered
           return 30;
         }
         return prev - 1;
@@ -180,7 +225,15 @@ export const Satellites: React.FC = () => {
   }, []);
 
   const selectedSat = SATELLITES.find(s => s.id === selectedSatId) || SATELLITES[0];
-  const currentPos = getSatellitePosition(selectedSat.id, timeMs);
+  
+  // Use live API coords if available for selected satellite
+  const hasLive = liveCoords[selectedSat.id];
+  const currentPos = hasLive 
+    ? { lat: hasLive.lat, lon: hasLive.lon }
+    : getSatellitePosition(selectedSat.id, timeMs);
+
+  const speedVal = hasLive ? hasLive.speed : selectedSat.speed;
+  const altitudeVal = hasLive ? hasLive.altitude : selectedSat.altitude;
   const currentCountry = getCountryOver(currentPos.lat, currentPos.lon);
 
   // Generate orbit path points
@@ -353,16 +406,16 @@ export const Satellites: React.FC = () => {
                     zIndex: 1
                   }} />
 
-                  {/* Dark-Cyan Stylized World Map Background Image */}
+                  {/* High-fidelity equirectangular Earth Night texture serving as control map */}
                   <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/World_map_blank_black_white.svg/1024px-World_map_blank_black_white.svg.png"
+                    src="https://unpkg.com/three-globe/example/img/earth-night.jpg"
                     alt="World radar map"
                     style={{
                       width: '100%',
                       height: '100%',
-                      objectFit: 'contain',
-                      opacity: 0.15,
-                      filter: 'invert(0.9) sepia(1) saturate(6) hue-rotate(170deg) brightness(0.75)',
+                      objectFit: 'fill',
+                      opacity: 0.35,
+                      filter: 'hue-rotate(180deg) brightness(0.7) contrast(1.1)',
                       zIndex: 2,
                       position: 'absolute'
                     }}
@@ -504,7 +557,8 @@ export const Satellites: React.FC = () => {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }} className="grid-responsive">
                   {filteredSats.map(sat => {
                     const isActive = sat.id === selectedSatId;
-                    const satPos = getSatellitePosition(sat.id, timeMs);
+                    const live = liveCoords[sat.id];
+                    const satPos = live ? { lat: live.lat, lon: live.lon } : getSatellitePosition(sat.id, timeMs);
                     return (
                       <GlassCard
                         key={sat.id}
@@ -566,14 +620,14 @@ export const Satellites: React.FC = () => {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '12px', background: 'rgba(255,255,255,0.01)', border: '1px solid var(--border-color)', borderRadius: '10px' }}>
                     <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Velocity</span>
-                    <span style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)' }}>{selectedSat.speed.toLocaleString()} km/h</span>
+                    <span style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)' }}>{Math.round(speedVal).toLocaleString()} km/h</span>
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '12px', background: 'rgba(255,255,255,0.01)', border: '1px solid var(--border-color)', borderRadius: '10px' }}>
                     <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Altitude</span>
                     <span style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-                      {selectedSat.altitude >= 1000000 
-                        ? `${(selectedSat.altitude / 1000000).toFixed(2)}M km` 
-                        : `${selectedSat.altitude.toLocaleString()} km`}
+                      {altitudeVal >= 1000000 
+                        ? `${(altitudeVal / 1000000).toFixed(2)}M km` 
+                        : `${Math.round(altitudeVal).toLocaleString()} km`}
                     </span>
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '12px', background: 'rgba(255,255,255,0.01)', border: '1px solid var(--border-color)', borderRadius: '10px' }}>
