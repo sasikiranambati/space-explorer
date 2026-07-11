@@ -40,47 +40,75 @@ export const SolarSystem: React.FC = () => {
     controls.minDistance = 20;
 
     // 2. Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.25);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
     scene.add(ambientLight);
 
-    const sunLight = new THREE.PointLight(0xfff3d1, 2, 300);
+    const sunLight = new THREE.PointLight(0xfff3d1, 3.5, 300);
     scene.add(sunLight);
 
-    // 3. Starfield Background
+    // 3. Starfield Background (Mixed colors: white, blue, yellow)
     const starGeometry = new THREE.BufferGeometry();
-    const starCount = 1200;
+    const starCount = 1500;
     const starPositions = new Float32Array(starCount * 3);
+    const starColors = new Float32Array(starCount * 3);
 
-    for (let i = 0; i < starCount * 3; i++) {
-      starPositions[i] = (Math.random() - 0.5) * 350;
+    for (let i = 0; i < starCount; i++) {
+      // Position
+      starPositions[i * 3] = (Math.random() - 0.5) * 350;
+      starPositions[i * 3 + 1] = (Math.random() - 0.5) * 350;
+      starPositions[i * 3 + 2] = (Math.random() - 0.5) * 350;
+
+      // Colors
+      const r = Math.random();
+      if (r < 0.6) { // White
+        starColors[i * 3] = 1.0; starColors[i * 3 + 1] = 1.0; starColors[i * 3 + 2] = 1.0;
+      } else if (r < 0.85) { // Light Blue
+        starColors[i * 3] = 0.7; starColors[i * 3 + 1] = 0.9; starColors[i * 3 + 2] = 1.0;
+      } else { // Warm Orange
+        starColors[i * 3] = 1.0; starColors[i * 3 + 1] = 0.85; starColors[i * 3 + 2] = 0.6;
+      }
     }
     starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-    const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.6 });
+    starGeometry.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
+    
+    const starMaterial = new THREE.PointsMaterial({
+      size: 0.75,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.85
+    });
     const starfield = new THREE.Points(starGeometry, starMaterial);
     scene.add(starfield);
 
-    // 4. Central Sun
+    // Texture Loader
+    const textureLoader = new THREE.TextureLoader();
+
+    // 4. Central Sun (Glowing furnace texture fallback)
     const sunGeometry = new THREE.SphereGeometry(7, 32, 32);
-    const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xffaa00 });
+    const sunTexture = textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/venus_atmosphere.jpg');
+    const sunMaterial = new THREE.MeshBasicMaterial({
+      map: sunTexture,
+      color: 0xffdd44
+    });
     const sun = new THREE.Mesh(sunGeometry, sunMaterial);
     scene.add(sun);
 
     // 5. Planet Configurations & Mesh Creation
     const PLANET_CONFIGS = [
-      { id: 'mercury', radius: 14, size: 0.45, color: 0x8a95a5, speed: 0.04 },
-      { id: 'venus', radius: 20, size: 0.75, color: 0xe3bb76, speed: 0.015 },
-      { id: 'earth', radius: 26, size: 0.85, color: 0x2b82c9, speed: 0.01 },
-      { id: 'mars', radius: 32, size: 0.55, color: 0xc1440e, speed: 0.008 },
-      { id: 'jupiter', radius: 46, size: 2.2, color: 0xb07f35, speed: 0.002 },
-      { id: 'saturn', radius: 60, size: 1.8, color: 0xe2bf7d, speed: 0.0009, hasRings: true },
-      { id: 'uranus', radius: 74, size: 1.25, color: 0x4b70dd, speed: 0.0004 },
-      { id: 'neptune', radius: 86, size: 1.2, color: 0x274687, speed: 0.0001 }
+      { id: 'mercury', radius: 14, size: 0.45, color: 0x8a95a5, speed: 0.04, textureUrl: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/mercury.jpg' },
+      { id: 'venus', radius: 20, size: 0.75, color: 0xe3bb76, speed: 0.015, textureUrl: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/venus_atmosphere.jpg' },
+      { id: 'earth', radius: 26, size: 0.85, color: 0x2b82c9, speed: 0.01, textureUrl: 'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg' },
+      { id: 'mars', radius: 32, size: 0.55, color: 0xc1440e, speed: 0.008, textureUrl: 'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/mars_1k_color.jpg' },
+      { id: 'jupiter', radius: 46, size: 2.2, color: 0xb07f35, speed: 0.002, textureUrl: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/jupiter.jpg' },
+      { id: 'saturn', radius: 60, size: 1.8, color: 0xe2bf7d, speed: 0.0009, hasRings: true, textureUrl: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/saturn.jpg' },
+      { id: 'uranus', radius: 74, size: 1.25, color: 0x4b70dd, speed: 0.0004, textureUrl: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/uranus.jpg' },
+      { id: 'neptune', radius: 86, size: 1.2, color: 0x274687, speed: 0.0001, textureUrl: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/neptune.jpg' }
     ];
 
     const planetMeshes: { mesh: THREE.Mesh; config: typeof PLANET_CONFIGS[number]; angle: number }[] = [];
 
     PLANET_CONFIGS.forEach(config => {
-      // (a) Draw circular orbit line
+      // (a) Draw circular orbit line (glow cyber-blue)
       const orbitGeometry = new THREE.BufferGeometry();
       const points = [];
       const segments = 128;
@@ -89,36 +117,45 @@ export const SolarSystem: React.FC = () => {
         points.push(new THREE.Vector3(Math.cos(theta) * config.radius, 0, Math.sin(theta) * config.radius));
       }
       orbitGeometry.setFromPoints(points);
-      const orbitMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.08 });
+      const orbitMaterial = new THREE.LineBasicMaterial({ color: 0x00d9ff, transparent: true, opacity: 0.12 });
       const orbitLine = new THREE.Line(orbitGeometry, orbitMaterial);
       scene.add(orbitLine);
 
-      // (b) Create Planet Sphere
+      // (b) Create Planet Sphere (map loaded high-res textures)
       const geom = new THREE.SphereGeometry(config.size, 32, 32);
+      const planetMap = textureLoader.load(config.textureUrl);
       const mat = new THREE.MeshStandardMaterial({
-        color: config.color,
+        map: planetMap,
         roughness: 0.7,
         metalness: 0.1,
         emissive: config.color,
-        emissiveIntensity: 0.1
+        emissiveIntensity: 0.05
       });
       const mesh = new THREE.Mesh(geom, mat);
       mesh.name = config.id;
       scene.add(mesh);
 
-      // (c) Saturn Rings
+      // (c) Saturn Concentric Rings Divisions
       if (config.hasRings) {
-        const ringGeom = new THREE.RingGeometry(config.size * 1.3, config.size * 2.1, 32);
-        const ringMat = new THREE.MeshBasicMaterial({ color: 0xd2b48c, side: THREE.DoubleSide, transparent: true, opacity: 0.5 });
+        // Inner Ring
+        const ringGeom = new THREE.RingGeometry(config.size * 1.3, config.size * 2.0, 64);
+        const ringMat = new THREE.MeshStandardMaterial({ color: 0xc4a482, side: THREE.DoubleSide, transparent: true, opacity: 0.75, roughness: 0.6 });
         const ring = new THREE.Mesh(ringGeom, ringMat);
         ring.rotation.x = Math.PI / 2.2;
         mesh.add(ring);
+
+        // Outer Ring
+        const ringGeom2 = new THREE.RingGeometry(config.size * 2.1, config.size * 2.5, 64);
+        const ringMat2 = new THREE.MeshStandardMaterial({ color: 0x9b7e5a, side: THREE.DoubleSide, transparent: true, opacity: 0.35, roughness: 0.8 });
+        const ring2 = new THREE.Mesh(ringGeom2, ringMat2);
+        ring2.rotation.x = Math.PI / 2.2;
+        mesh.add(ring2);
       }
 
       planetMeshes.push({
         mesh,
         config,
-        angle: Math.random() * Math.PI * 2 // Random initial orbit angles
+        angle: Math.random() * Math.PI * 2
       });
     });
 
