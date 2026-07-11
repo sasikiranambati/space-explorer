@@ -5,6 +5,7 @@ import { Footer } from '../components/Footer';
 import { InteractiveStarfield } from '../components/InteractiveStarfield';
 import { NebulaBackground } from '../components/NebulaBackground';
 import { CommandPalette } from '../components/CommandPalette';
+import { SpaceAssistant } from '../components/SpaceAssistant';
 
 export const RootLayout: React.FC = () => {
   const [isCmdOpen, setIsCmdOpen] = useState(false);
@@ -39,6 +40,9 @@ export const RootLayout: React.FC = () => {
 
       {/* Global search palette */}
       <CommandPalette isOpen={isCmdOpen} onClose={() => setIsCmdOpen(false)} />
+
+      {/* Global AI Space Assistant */}
+      <SpaceAssistant />
     </div>
   );
 };
