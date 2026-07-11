@@ -1,8 +1,9 @@
 import React from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { getEntityById } from '../services/mockData';
 import type { EntityCategory } from '../types';
 import { useFavorites } from '../contexts/FavoritesContext';
+import { useSpaceEntity } from '../hooks/useSpaceEntity';
+import { LoadingSkeleton } from '../components/LoadingSkeleton';
 import { GlassCard } from '../components/GlassCard';
 import { StatCard } from '../components/StatCard';
 import { ErrorState } from '../components/ErrorState';
@@ -16,9 +17,17 @@ export const Details: React.FC = () => {
   const navigate = useNavigate();
   const { toggleFavorite, isFavorite } = useFavorites();
 
-  const entity = getEntityById(category as EntityCategory, id || '');
+  const { data: entity, isLoading, isError } = useSpaceEntity(category as EntityCategory, id || '');
 
-  if (!entity) {
+  if (isLoading) {
+    return (
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 24px' }}>
+        <LoadingSkeleton variant="details" />
+      </div>
+    );
+  }
+
+  if (isError || !entity) {
     return (
       <ErrorState
         icon="error"

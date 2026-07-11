@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { FavoritesProvider } from './contexts/FavoritesContext';
 import { RootLayout } from './layouts/RootLayout';
@@ -11,9 +12,21 @@ import { News } from './pages/News';
 import { Favorites } from './pages/Favorites';
 import { About } from './pages/About';
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      staleTime: 10 * 60 * 1000, // 10 minutes
+      gcTime: 30 * 60 * 1000,    // 30 minutes
+      retry: 1,
+    },
+  },
+});
+
 function App() {
   return (
-    <ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
       <FavoritesProvider>
         <BrowserRouter>
           <Routes>
@@ -31,6 +44,7 @@ function App() {
         </BrowserRouter>
       </FavoritesProvider>
     </ThemeProvider>
+    </QueryClientProvider>
   );
 }
 

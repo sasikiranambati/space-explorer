@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { allEntities } from '../services/mockData';
+import { useSpaceSearch } from '../hooks/useSpaceSearch';
+import { LoadingSkeleton } from '../components/LoadingSkeleton';
 import type { SpaceEntity, EntityCategory } from '../types';
 import { GlassCard } from '../components/GlassCard';
 import { ErrorState } from '../components/ErrorState';
@@ -18,7 +19,6 @@ export const Explore: React.FC = () => {
 
   const [activeCategory, setActiveCategory] = useState<string>(urlCategory);
   const [searchQuery, setSearchQuery] = useState<string>(urlSearch);
-  const [filteredEntities, setFilteredEntities] = useState<SpaceEntity[]>(allEntities);
 
   // Synchronize component states when URL parameters change
   useEffect(() => {
@@ -26,28 +26,11 @@ export const Explore: React.FC = () => {
     setSearchQuery(urlSearch);
   }, [urlCategory, urlSearch]);
 
-  // Apply filters on category or query update
-  useEffect(() => {
-    let result = allEntities;
-
-    // Filter by Category
-    if (activeCategory !== 'all') {
-      result = result.filter(item => item.category === activeCategory);
-    }
-
-    // Filter by Query text
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase().trim();
-      result = result.filter(
-        item =>
-          item.name.toLowerCase().includes(q) ||
-          item.description.toLowerCase().includes(q) ||
-          item.category.toLowerCase().includes(q)
-      );
-    }
-
-    setFilteredEntities(result);
-  }, [activeCategory, searchQuery]);
+  const { data: searchResults, isLoading, isError } = useSpaceSearch(
+    searchQuery,
+    activeCategory === 'all' ? undefined : activeCategory
+  );
+  const filteredEntities = searchResults || [];
 
   const handleCategoryChange = (category: string) => {
     const newParams = new URLSearchParams(searchParams);
@@ -216,7 +199,31 @@ export const Explore: React.FC = () => {
 
       {/* Search Grid List */}
       <AnimatePresence mode="popLayout">
-        {filteredEntities.length === 0 ? (
+        {isLoading ? (
+          <motion.div
+            key="loading"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <LoadingSkeleton variant="grid" count={8} />
+          </motion.div>
+        ) : isError ? (
+          <motion.div
+            key="error"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <ErrorState
+              icon="error"
+              title="Cosmic connection lost"
+              description="A network query timeout or API rate-limit was hit. Fallback registry is loading."
+              onReset={() => handleSearchChange('')}
+              resetLabel="Retry Query"
+            />
+          </motion.div>
+        ) : filteredEntities.length === 0 ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}

@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getNews } from '../services/mockData';
+import { useSpaceNews } from '../hooks/useSpaceNews';
+import { LoadingSkeleton } from '../components/LoadingSkeleton';
+import { ErrorState } from '../components/ErrorState';
 import { GlassCard } from '../components/GlassCard';
 import { SectionTitle } from '../components/SectionTitle';
 import { Calendar, Clock, ChevronDown, ChevronUp } from 'lucide-react';
 
 export const News: React.FC = () => {
-  const allNews = getNews();
   const [activeCategory, setActiveCategory] = useState('All');
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
-  const categories = ['All', 'Missions', 'Science', 'Technology', 'Astrophysics'];
+  const { data: newsItems, isLoading, isError } = useSpaceNews(activeCategory);
+  const filteredNews = newsItems || [];
 
-  const filteredNews = activeCategory === 'All'
-    ? allNews
-    : allNews.filter(item => item.category === activeCategory);
+  const categories = ['All', 'Missions', 'Science', 'Technology', 'Astrophysics'];
 
   const toggleExpand = (id: string) => {
     setExpandedId(prev => (prev === id ? null : id));
@@ -67,7 +67,36 @@ export const News: React.FC = () => {
       {/* News Grid */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
         <AnimatePresence mode="popLayout">
-          {filteredNews.map((item, i) => {
+        {isLoading ? (
+          <motion.div
+            key="loading"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <LoadingSkeleton variant="card" count={3} />
+          </motion.div>
+        ) : isError ? (
+          <motion.div
+            key="error"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <ErrorState
+              icon="error"
+              title="Could not connect to news feed"
+              description="The space news server is temporarily offline. Fallback logs are displaying."
+              onReset={() => setActiveCategory('All')}
+              resetLabel="Reload Feed"
+            />
+          </motion.div>
+        ) : filteredNews.length === 0 ? (
+          <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-secondary)' }}>
+            No current news articles matched this filter.
+          </div>
+        ) : (
+          filteredNews.map((item, i) => {
             const isExpanded = expandedId === item.id;
             return (
               <GlassCard
@@ -191,7 +220,8 @@ export const News: React.FC = () => {
                 </div>
               </GlassCard>
             );
-          })}
+          })
+        )}
         </AnimatePresence>
       </div>
 

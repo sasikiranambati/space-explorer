@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Compass, User, Rocket, Landmark, Milestone, Sparkles, X, Clock, Moon } from 'lucide-react';
-import { searchEntities } from '../services/mockData';
+import { useSpaceSearch } from '../hooks/useSpaceSearch';
 import type { SpaceEntity, EntityCategory } from '../types';
 
 interface SearchBarProps {
@@ -16,7 +16,6 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
-  const [results, setResults] = useState<SpaceEntity[]>([]);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [recentSearches, setRecentSearches] = useState<string[]>(() => {
     try {
@@ -26,6 +25,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({
       return ['Mars', 'Apollo 11', 'ISS'];
     }
   });
+
+  const { data: searchResults, isLoading } = useSpaceSearch(query);
+  const results = searchResults || [];
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -50,15 +52,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Update search results on query change
+  // Reset selected item index when query text changes
   useEffect(() => {
-    if (!query.trim()) {
-      setResults([]);
-      setActiveIndex(-1);
-      return;
-    }
-    const filtered = searchEntities(query);
-    setResults(filtered);
     setActiveIndex(-1);
   }, [query]);
 
@@ -341,14 +336,21 @@ export const SearchBar: React.FC<SearchBarProps> = ({
             </div>
           )}
 
+          {/* Loader indicator */}
+          {query.trim() && isLoading && (
+            <div style={{ padding: '24px 8px', textAlign: 'center', color: 'var(--text-muted)' }}>
+              Searching the cosmos...
+            </div>
+          )}
+
           {/* Search Results grouped by Category */}
-          {query.trim() && results.length === 0 && (
+          {query.trim() && !isLoading && results.length === 0 && (
             <div style={{ padding: '24px 8px', textAlign: 'center', color: 'var(--text-secondary)' }}>
               No matches found for "{query}"
             </div>
           )}
 
-          {query.trim() && results.length > 0 && (
+          {query.trim() && !isLoading && results.length > 0 && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {groupBoundaries.map((boundary, gIdx) => {
                 const categoryList = results.slice(
