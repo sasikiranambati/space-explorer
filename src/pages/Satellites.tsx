@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Radio, Navigation, Search, Orbit, Clock
@@ -150,6 +150,15 @@ function getSatellitePosition(satId: string, timeMs: number) {
 
 export const Satellites: React.FC = () => {
   const [selectedSatId, setSelectedSatId] = useState<string>('iss');
+  const mapRef = useRef<HTMLDivElement | null>(null);
+
+  const handleSelectSat = (id: string) => {
+    setSelectedSatId(id);
+    // Smooth scroll back to map when selection changes so map details are immediately visible
+    setTimeout(() => {
+      mapRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 50);
+  };
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [timeMs, setTimeMs] = useState<number>(Date.now());
@@ -295,30 +304,30 @@ export const Satellites: React.FC = () => {
   const paths = getOrbitPathsSvg();
   const currentPosPercent = mapCoordsToPercent(currentPos.lat, currentPos.lon);
 
-  // Generate dynamic pass schedules based on time
-  const generatePasses = (sat: Satellite) => {
-    const passes = [];
-    const stepMin = sat.period; // Next orbits
-    const baseTime = timeMs;
+  // Generate dynamic pass schedules based on time, memoized to prevent flickering
+  const passes = useMemo(() => {
+    const list = [];
+    const stepMin = selectedSat.period; // Next orbits
+    const baseTime = Math.floor(Date.now() / 3600000) * 3600000;
 
     for (let i = 1; i <= 4; i++) {
-      const passTime = new Date(baseTime + i * stepMin * 60 * 1000);
-      const durationSec = Math.floor(200 + Math.random() * 200);
+      const seed = selectedSat.id.charCodeAt(0) + i;
+      const durationSec = 200 + (seed % 200);
       const durationMin = Math.floor(durationSec / 60);
       const durationRemSec = durationSec % 60;
-      const elevation = Math.floor(15 + Math.random() * 70);
+      const elevation = 15 + (seed % 70);
 
-      passes.push({
+      const passTime = new Date(baseTime + i * stepMin * 60 * 1000);
+
+      list.push({
         time: passTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
         date: passTime.toLocaleDateString([], { month: 'short', day: 'numeric' }),
         duration: `${durationMin}m ${durationRemSec}s`,
         elevation: `${elevation}°`
       });
     }
-    return passes;
-  };
-
-  const passes = generatePasses(selectedSat);
+    return list;
+  }, [selectedSat.id]);
 
   // Filtering Satellites list
   const filteredSats = SATELLITES.filter(sat => {
@@ -371,136 +380,136 @@ export const Satellites: React.FC = () => {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px' }} className="sat-grid">
             
             {/* Map & List Section */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-              {/* World Map Wrapper */}
-              <GlassCard hoverScale={false} style={{ padding: 0, overflow: 'hidden', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                {/* Visual Header */}
-                <div style={{
-                  padding: '16px 24px',
-                  borderBottom: '1px solid var(--border-color)',
-                  background: 'rgba(10, 15, 30, 0.6)',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Navigation size={16} className="radar-ping" style={{ color: 'var(--color-accent)' }} />
-                    <span style={{ fontSize: '0.9rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
-                      Telemetry Live Radar Map
-                    </span>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: '#10b981' }}>
-                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', boxShadow: '0 0 8px #10b981' }} />
-                    <span>Synchronized</span>
-                  </div>
-                </div>
-
-                {/* Styled Equirectangular Map Container */}
-                <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', background: '#030712' }}>
-                  {/* Glowing Grid Background Layer */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>              <div ref={mapRef}>
+                <GlassCard hoverScale={false} style={{ padding: 0, overflow: 'hidden', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                  {/* Visual Header */}
                   <div style={{
-                    position: 'absolute',
-                    top: 0, left: 0, right: 0, bottom: 0,
-                    backgroundImage: 'radial-gradient(rgba(56, 189, 248, 0.04) 1px, transparent 1px)',
-                    backgroundSize: '24px 24px',
-                    zIndex: 1
-                  }} />
-
-                  {/* High-fidelity equirectangular Earth Night texture serving as control map */}
-                  <img
-                    src="https://unpkg.com/three-globe/example/img/earth-night.jpg"
-                    alt="World radar map"
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'fill',
-                      opacity: 0.75,
-                      filter: 'hue-rotate(180deg) brightness(2.2) contrast(1.3)',
-                      zIndex: 2,
-                      position: 'absolute'
-                    }}
-                  />
-
-                  {/* SVG Overlay containing active satellite positions and orbits */}
-                  <svg
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      zIndex: 3,
-                      overflow: 'visible'
-                    }}
-                  >
-                    {/* Orbit Path Layer */}
-                    {paths.map((p, index) => (
-                      <motion.path
-                        key={index}
-                        d={p.d}
-                        fill="none"
-                        stroke="var(--color-accent)"
-                        strokeWidth="1.5"
-                        strokeDasharray="4 3"
-                        initial={{ pathLength: 0 }}
-                        animate={{ pathLength: 1 }}
-                        transition={{ duration: 0.5 }}
-                        style={{ filter: 'drop-shadow(0 0 3px var(--color-accent))' }}
-                      />
-                    ))}
-
-                    {/* Satellite Active Indicator (Pulse Rings) */}
-                    <g transform={`translate(${currentPosPercent.x * (100 / 100)}%, ${currentPosPercent.y * (100 / 100)}%)`} style={{ transformBox: 'fill-box' }}>
-                      {/* Pulse circle 1 */}
-                      <circle
-                        r="18"
-                        fill="none"
-                        stroke="var(--color-accent)"
-                        strokeWidth="1"
-                        style={{
-                          transformOrigin: 'center',
-                          animation: 'pulse-radar 2s cubic-bezier(0.215, 0.610, 0.355, 1) infinite'
-                        }}
-                      />
-                      {/* Pulse circle 2 */}
-                      <circle
-                        r="10"
-                        fill="none"
-                        stroke="var(--color-accent)"
-                        strokeWidth="1.5"
-                        style={{
-                          transformOrigin: 'center',
-                          animation: 'pulse-radar 2s cubic-bezier(0.215, 0.610, 0.355, 1) 0.6s infinite'
-                        }}
-                      />
-                      {/* Solid Center Dot */}
-                      <circle
-                        r="4"
-                        fill="#00ffd5"
-                        style={{ filter: 'drop-shadow(0 0 6px #00ffd5)' }}
-                      />
-                    </g>
-                  </svg>
-                  
-                  {/* Floating Coordinates Indicator */}
-                  <div style={{
-                    position: 'absolute',
-                    bottom: '12px',
-                    left: '12px',
-                    background: 'rgba(5, 7, 18, 0.75)',
-                    backdropFilter: 'blur(8px)',
-                    border: '1px solid var(--border-color)',
-                    padding: '8px 12px',
-                    borderRadius: '8px',
-                    fontSize: '0.75rem',
-                    fontFamily: 'monospace',
-                    color: 'var(--text-secondary)',
-                    zIndex: 4
+                    padding: '16px 24px',
+                    borderBottom: '1px solid var(--border-color)',
+                    background: 'rgba(10, 15, 30, 0.6)',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
                   }}>
-                    Lat: <span style={{ color: 'var(--color-accent)' }}>{currentPos.lat.toFixed(4)}°</span> | Lon: <span style={{ color: 'var(--color-accent)' }}>{currentPos.lon.toFixed(4)}°</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <Navigation size={16} className="radar-ping" style={{ color: 'var(--color-accent)' }} />
+                      <span style={{ fontSize: '0.9rem', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                        Telemetry Live Radar Map
+                      </span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: '#10b981' }}>
+                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', boxShadow: '0 0 8px #10b981' }} />
+                      <span>Synchronized</span>
+                    </div>
                   </div>
-                </div>
-              </GlassCard>
+
+                  {/* Styled Equirectangular Map Container */}
+                  <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', background: '#030712' }}>
+                    {/* Glowing Grid Background Layer */}
+                    <div style={{
+                      position: 'absolute',
+                      top: 0, left: 0, right: 0, bottom: 0,
+                      backgroundImage: 'radial-gradient(rgba(56, 189, 248, 0.04) 1px, transparent 1px)',
+                      backgroundSize: '24px 24px',
+                      zIndex: 1
+                    }} />
+
+                    {/* High-fidelity equirectangular Earth Night texture serving as control map */}
+                    <img
+                      src="https://unpkg.com/three-globe/example/img/earth-night.jpg"
+                      alt="World radar map"
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'fill',
+                        opacity: 0.75,
+                        filter: 'hue-rotate(180deg) brightness(2.2) contrast(1.3)',
+                        zIndex: 2,
+                        position: 'absolute'
+                      }}
+                    />
+
+                    {/* SVG Overlay containing active satellite positions and orbits */}
+                    <svg
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        zIndex: 3,
+                        overflow: 'visible'
+                      }}
+                    >
+                      {/* Orbit Path Layer */}
+                      {paths.map((p, index) => (
+                        <motion.path
+                          key={`${selectedSat.id}-${index}`}
+                          d={p.d}
+                          fill="none"
+                          stroke="var(--color-accent)"
+                          strokeWidth="1.5"
+                          strokeDasharray="4 3"
+                          initial={{ pathLength: 0 }}
+                          animate={{ pathLength: 1 }}
+                          transition={{ duration: 0.5 }}
+                          style={{ filter: 'drop-shadow(0 0 3px var(--color-accent))' }}
+                        />
+                      ))}
+
+                      {/* Satellite Active Indicator (Pulse Rings) */}
+                      <g key={selectedSat.id} transform={`translate(${currentPosPercent.x * (100 / 100)}%, ${currentPosPercent.y * (100 / 100)}%)`} style={{ transformBox: 'fill-box' }}>
+                        {/* Pulse circle 1 */}
+                        <circle
+                          r="18"
+                          fill="none"
+                          stroke="var(--color-accent)"
+                          strokeWidth="1"
+                          style={{
+                            transformOrigin: 'center',
+                            animation: 'pulse-radar 2s cubic-bezier(0.215, 0.610, 0.355, 1) infinite'
+                          }}
+                        />
+                        {/* Pulse circle 2 */}
+                        <circle
+                          r="10"
+                          fill="none"
+                          stroke="var(--color-accent)"
+                          strokeWidth="1.5"
+                          style={{
+                            transformOrigin: 'center',
+                            animation: 'pulse-radar 2s cubic-bezier(0.215, 0.610, 0.355, 1) 0.6s infinite'
+                          }}
+                        />
+                        {/* Solid Center Dot */}
+                        <circle
+                          r="4"
+                          fill="#00ffd5"
+                          style={{ filter: 'drop-shadow(0 0 6px #00ffd5)' }}
+                        />
+                      </g>
+                    </svg>
+                    
+                    {/* Floating Coordinates Indicator */}
+                    <div style={{
+                      position: 'absolute',
+                      bottom: '12px',
+                      left: '12px',
+                      background: 'rgba(5, 7, 18, 0.75)',
+                      backdropFilter: 'blur(8px)',
+                      border: '1px solid var(--border-color)',
+                      padding: '8px 12px',
+                      borderRadius: '8px',
+                      fontSize: '0.75rem',
+                      fontFamily: 'monospace',
+                      color: 'var(--text-secondary)',
+                      zIndex: 4
+                    }}>
+                      Lat: <span style={{ color: 'var(--color-accent)' }}>{currentPos.lat.toFixed(4)}°</span> | Lon: <span style={{ color: 'var(--color-accent)' }}>{currentPos.lon.toFixed(4)}°</span>
+                    </div>
+                  </div>
+                </GlassCard>
+              </div>
 
               {/* Filtering & Registry grid */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -563,7 +572,7 @@ export const Satellites: React.FC = () => {
                       <GlassCard
                         key={sat.id}
                         hoverScale={true}
-                        onClick={() => setSelectedSatId(sat.id)}
+                        onClick={() => handleSelectSat(sat.id)}
                         style={{
                           cursor: 'pointer',
                           borderColor: isActive ? 'var(--color-accent)' : 'rgba(255, 255, 255, 0.04)',
