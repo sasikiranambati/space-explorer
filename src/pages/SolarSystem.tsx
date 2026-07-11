@@ -85,7 +85,7 @@ export const SolarSystem: React.FC = () => {
 
     // 4. Central Sun (Glowing furnace texture fallback)
     const sunGeometry = new THREE.SphereGeometry(7, 32, 32);
-    const sunTexture = textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/venus_atmosphere.jpg');
+    const sunTexture = textureLoader.load('https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/venusmap.jpg');
     const sunMaterial = new THREE.MeshBasicMaterial({
       map: sunTexture,
       color: 0xffdd44
@@ -95,14 +95,14 @@ export const SolarSystem: React.FC = () => {
 
     // 5. Planet Configurations & Mesh Creation
     const PLANET_CONFIGS = [
-      { id: 'mercury', radius: 14, size: 0.45, color: 0x8a95a5, speed: 0.04, textureUrl: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/mercury.jpg' },
-      { id: 'venus', radius: 20, size: 0.75, color: 0xe3bb76, speed: 0.015, textureUrl: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/venus_atmosphere.jpg' },
+      { id: 'mercury', radius: 14, size: 0.45, color: 0x8a95a5, speed: 0.04, textureUrl: 'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/mercurymap.jpg' },
+      { id: 'venus', radius: 20, size: 0.75, color: 0xe3bb76, speed: 0.015, textureUrl: 'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/venusmap.jpg' },
       { id: 'earth', radius: 26, size: 0.85, color: 0x2b82c9, speed: 0.01, textureUrl: 'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg' },
       { id: 'mars', radius: 32, size: 0.55, color: 0xc1440e, speed: 0.008, textureUrl: 'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/mars_1k_color.jpg' },
-      { id: 'jupiter', radius: 46, size: 2.2, color: 0xb07f35, speed: 0.002, textureUrl: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/jupiter.jpg' },
-      { id: 'saturn', radius: 60, size: 1.8, color: 0xe2bf7d, speed: 0.0009, hasRings: true, textureUrl: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/saturn.jpg' },
-      { id: 'uranus', radius: 74, size: 1.25, color: 0x4b70dd, speed: 0.0004, textureUrl: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/uranus.jpg' },
-      { id: 'neptune', radius: 86, size: 1.2, color: 0x274687, speed: 0.0001, textureUrl: 'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/planets/neptune.jpg' }
+      { id: 'jupiter', radius: 46, size: 2.2, color: 0xb07f35, speed: 0.002, textureUrl: 'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/jupitermap.jpg' },
+      { id: 'saturn', radius: 60, size: 1.8, color: 0xe2bf7d, speed: 0.0009, hasRings: true, textureUrl: 'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/saturnmap.jpg' },
+      { id: 'uranus', radius: 74, size: 1.25, color: 0x4b70dd, speed: 0.0004, textureUrl: 'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/uranusmap.jpg' },
+      { id: 'neptune', radius: 86, size: 1.2, color: 0x274687, speed: 0.0001, textureUrl: 'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/neptunemap.jpg' }
     ];
 
     const planetMeshes: { mesh: THREE.Mesh; config: typeof PLANET_CONFIGS[number]; angle: number }[] = [];
