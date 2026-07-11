@@ -414,8 +414,8 @@ export const Satellites: React.FC = () => {
                       width: '100%',
                       height: '100%',
                       objectFit: 'fill',
-                      opacity: 0.35,
-                      filter: 'hue-rotate(180deg) brightness(0.7) contrast(1.1)',
+                      opacity: 0.75,
+                      filter: 'hue-rotate(180deg) brightness(2.2) contrast(1.3)',
                       zIndex: 2,
                       position: 'absolute'
                     }}
