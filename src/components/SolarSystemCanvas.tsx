@@ -145,6 +145,27 @@ const SunFallback: React.FC = () => (
   </mesh>
 );
 
+// Stable Orbit Ring Line to prevent dynamic recreate crashes
+const OrbitLine: React.FC<{ radius: number }> = ({ radius }) => {
+  const points = React.useMemo(() => {
+    const pts = [];
+    const segments = 128;
+    for (let i = 0; i <= segments; i++) {
+      const theta = (i / segments) * Math.PI * 2;
+      pts.push(new THREE.Vector3(Math.cos(theta) * radius, 0, Math.sin(theta) * radius));
+    }
+    return pts;
+  }, [radius]);
+
+  const geometry = React.useMemo(() => new THREE.BufferGeometry().setFromPoints(points), [points]);
+
+  return (
+    <lineLoop geometry={geometry}>
+      <lineBasicMaterial color={0x00d9ff} transparent={true} opacity={0.12} />
+    </lineLoop>
+  );
+};
+
 // 3. Main Canvas wrapper
 interface SolarSystemCanvasProps {
   timeSpeed: number;
@@ -208,19 +229,10 @@ export const SolarSystemCanvas: React.FC<SolarSystemCanvasProps> = ({
 
           {/* Orbits Loops & Revolving Planet spheres */}
           {PLANET_CONFIGS.map(config => {
-            // Render subtle blue orbit ring path
-            const points = [];
-            const segments = 128;
-            for (let i = 0; i <= segments; i++) {
-              const theta = (i / segments) * Math.PI * 2;
-              points.push(new THREE.Vector3(Math.cos(theta) * config.radius, 0, Math.sin(theta) * config.radius));
-            }
-            const orbitGeom = new THREE.BufferGeometry().setFromPoints(points);
-
             return (
               <group key={config.id}>
-                {/* Orbital Ring Line using primitive to avoid SVG line tag typings clash */}
-                <primitive object={new THREE.Line(orbitGeom, new THREE.LineBasicMaterial({ color: 0x00d9ff, transparent: true, opacity: 0.12 }))} />
+                {/* Stable, cached Orbit ring Loop path */}
+                <OrbitLine radius={config.radius} />
 
                 {/* Interactive Planet Node */}
                 <PlanetNode
