@@ -18,8 +18,8 @@ interface PlanetConfig {
 const PLANET_CONFIGS: PlanetConfig[] = [
   { id: 'mercury', name: 'Mercury', radius: 14, size: 0.45, color: 0x8a95a5, speed: 0.04, textureUrl: 'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/mercurymap.jpg' },
   { id: 'venus', name: 'Venus', radius: 20, size: 0.75, color: 0xe3bb76, speed: 0.015, textureUrl: 'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/venusmap.jpg' },
-  { id: 'earth', name: 'Earth', radius: 26, size: 0.85, color: 0x2b82c9, speed: 0.01, textureUrl: 'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg' },
-  { id: 'mars', name: 'Mars', radius: 32, size: 0.55, color: 0xc1440e, speed: 0.008, textureUrl: 'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/mars_1k_color.jpg' },
+  { id: 'earth', name: 'Earth', radius: 26, size: 0.85, color: 0x2b82c9, speed: 0.01, textureUrl: 'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/earthmap1k.jpg' },
+  { id: 'mars', name: 'Mars', radius: 32, size: 0.55, color: 0xc1440e, speed: 0.008, textureUrl: 'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/marsmap1k.jpg' },
   { id: 'jupiter', name: 'Jupiter', radius: 46, size: 2.2, color: 0xb07f35, speed: 0.002, textureUrl: 'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/jupitermap.jpg' },
   { id: 'saturn', name: 'Saturn', radius: 60, size: 1.8, color: 0xe2bf7d, speed: 0.0009, hasRings: true, textureUrl: 'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/saturnmap.jpg' },
   { id: 'uranus', name: 'Uranus', radius: 74, size: 1.25, color: 0x4b70dd, speed: 0.0004, textureUrl: 'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/uranusmap.jpg' },

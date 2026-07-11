@@ -17,25 +17,22 @@ export const PLANETS_3D_CONFIGS: Record<string, Planet3DConfig> = {
   earth: {
     id: 'earth',
     name: 'Earth',
-    textureUrl: 'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg',
-    normalMapUrl: 'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_normal_2048.jpg',
-    specularMapUrl: 'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_specular_2048.jpg',
-    cloudsUrl: 'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_clouds_1024.png',
+    textureUrl: 'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/earthmap1k.jpg',
+    cloudsUrl: 'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/earthclouds1k.png',
     color: '#2b82c9',
     rotationSpeed: 0.005
   },
   mars: {
     id: 'mars',
     name: 'Mars',
-    textureUrl: 'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/mars_1k_color.jpg',
-    bumpMapUrl: 'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/mars_1k_topo.jpg',
+    textureUrl: 'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/marsmap1k.jpg',
     color: '#c1440e',
     rotationSpeed: 0.0048
   },
   moon: {
     id: 'moon',
     name: 'Moon',
-    textureUrl: 'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/moon_1024.jpg',
+    textureUrl: 'https://raw.githubusercontent.com/jeromeetienne/threex.planets/master/images/moonmap1k.jpg',
     color: '#8a95a5',
     rotationSpeed: 0.001
   },
