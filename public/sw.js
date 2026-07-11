@@ -34,6 +34,12 @@ self.addEventListener('fetch', (event) => {
   // Only cache GET requests
   if (event.request.method !== 'GET') return;
 
+  // Disable caching on localhost during development to prevent dev bundle locks!
+  if (event.request.url.includes('localhost') || event.request.url.includes('127.0.0.1')) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
